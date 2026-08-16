@@ -19,10 +19,9 @@ if ( isset( $_REQUEST['modfunc'] )
 {
 	// Redirect to index.php with same locale as old session & eventual reason & redirect to URL.
 	header( 'Location: ' . URLEscape( 'index.php?locale=' . $_SESSION['locale'] .
-		( isset( $_REQUEST['reason'] ) ? '&reason=' . $_REQUEST['reason'] : '' ) .
 		( isset( $_REQUEST['redirect_to'] ) ?
 			'&redirect_to=' . urlencode( $_REQUEST['redirect_to'] ) :
-			'' ) ) );
+			'' ) );
 
 	if ( ! empty( $_REQUEST['token'] )
 		&& $_SESSION['token'] === $_REQUEST['token'] )
@@ -486,7 +485,7 @@ if ( empty( $_SESSION['STAFF_ID'] )
 
 	<img src="assets/themes/<?php echo URLEscape( Config( 'THEME' ) ); ?>/logo.png" class="logo center" alt="Logo" />
 	<h4 class="center"><?php echo ParseMLField( Config( 'TITLE' ) ); ?></h4>
-	<form name="loginform" id="loginform" method="post">
+	<form name="loginform" id="loginform" method="post" action="index.php">
 	<table class="cellspacing-0 width-100p">
 
 	<?php // Choose language.

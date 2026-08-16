@@ -197,11 +197,12 @@ elseif ( isset( $_POST['USERNAME'] )
 		}
 	}
 
-	// Admin, teacher or parent: initiate session.
+	// Admin, teacher, parent or guest: initiate session.
 	if ( $login_RET
 		&& ( $login_RET[1]['PROFILE'] === 'admin'
 			|| $login_RET[1]['PROFILE'] === 'teacher'
-			|| $login_RET[1]['PROFILE'] === 'parent' ) )
+			|| $login_RET[1]['PROFILE'] === 'parent'
+			|| $login_RET[1]['PROFILE'] === 'guest' ) )
 	{
 		$_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
 

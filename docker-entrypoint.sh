@@ -41,4 +41,7 @@ cat > /etc/apache2/sites-available/000-default.conf <<CONF
 </VirtualHost>
 CONF
 
+# Use the dedicated kerrfairtex schema (public is shared with another app)
+export PGOPTIONS='-c search_path=kerrfairtex,public'
+
 exec apache2-foreground

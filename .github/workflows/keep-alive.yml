@@ -1,0 +1,24 @@
+name: keep-alive
+
+# External ping so Render's free tier never goes idle (sleeps after ~15 min).
+# Internal self-pings don't work here: free tier suspends the whole container,
+# so only an external caller can wake it.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # every 10 minutes (UTC)
+  workflow_dispatch:           # allows manual trigger for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping live app
+        run: |
+          for attempt in 1 2 3; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 90 -L \
+              https://smartcampk12.onrender.com)
+            echo "attempt ${attempt}: HTTP ${code}"
+            [ "${code}" = "200" ] && break
+            sleep 20
+          done

@@ -1,12 +1,12 @@
 {
-	"name": "kerrfairtex/kerrfairtex",
+	"name": "kerrfairtex/smartcampk12",
 	"description": "Student Information System for school management",
 	"keywords": ["school", "education", "student", "management", "erp", "gradebook", "attendance", "teacher", "timetable"],
-	"homepage": "https://github.com/kerrfairtex/kerrfairtex/",
+	"homepage": "https://github.com/kerrfairtex/smartcampk12/",
 	"support": {
-		"issues": "https://github.com/kerrfairtex/kerrfairtex/-/issues",
+		"issues": "https://github.com/kerrfairtex/smartcampk12/-/issues",
 		"forum": "https://www.kerrfairtex.org/forum/",
-		"wiki": "https://github.com/kerrfairtex/kerrfairtex/-/wikis/home"
+		"wiki": "https://github.com/kerrfairtex/smartcampk12/-/wikis/home"
 	},
 	"license": "GPL-2.0-or-later",
 	"authors": [{
@@ -31,6 +31,6 @@
 			"wkhtmltopdf/wkhtmltopdf": "KerrFairtex relies on wkhtmltopdf to generate PDF reports.",
 			"kornelski/pngquant": "KerrFairtex relies on PNGQuant to compress PNG images."
 		},
-		"self_url": "https://github.com/kerrfairtex/kerrfairtex/raw/mobile/composer.json"
+		"self_url": "https://github.com/kerrfairtex/smartcampk12/raw/main/composer.json"
 	}
 }

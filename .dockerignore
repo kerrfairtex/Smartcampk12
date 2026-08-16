@@ -1,0 +1,6 @@
+.git
+.env
+node_modules
+Dockerfile
+.dockerignore
+config.inc.php

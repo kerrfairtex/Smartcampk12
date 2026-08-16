@@ -1,0 +1,36 @@
+{
+	"name": "kerrfairtex/kerrfairtex",
+	"description": "Student Information System for school management",
+	"keywords": ["school", "education", "student", "management", "erp", "gradebook", "attendance", "teacher", "timetable"],
+	"homepage": "https://github.com/kerrfairtex/kerrfairtex/",
+	"support": {
+		"issues": "https://github.com/kerrfairtex/kerrfairtex/-/issues",
+		"forum": "https://www.kerrfairtex.org/forum/",
+		"wiki": "https://github.com/kerrfairtex/kerrfairtex/-/wikis/home"
+	},
+	"license": "GPL-2.0-or-later",
+	"authors": [{
+		"name": "KerrFairtex"
+	}],
+	"require": {
+		"php": ">=5.5.9"
+	},
+	"suggest": {
+		"ext-pgsql": "KerrFairtex relies on the pgsql extension (used to connect to the PostgreSQL database).",
+		"ext-mysqli": "KerrFairtex relies on the mysql (or mysqli) extension (used to connect to the MySQL database).",
+		"ext-pdo": "KerrFairtex relies on the pdo extension (used for prepared SQL statements).",
+		"ext-mbstring": "KerrFairtex relies on the mbstring extension (used for multibyte strings).",
+		"ext-gettext": "KerrFairtex relies on the gettext extension (used for translations).",
+		"ext-intl": "KerrFairtex relies on the intl extension (used for internationalization).",
+		"ext-zip": "KerrFairtex relies on the zip extension (used to upload add-ons).",
+		"ext-curl": "KerrFairtex relies on the curl extension (used to make external API calls).",
+		"ext-gd": "KerrFairtex relies on the gd extension (used to resize and compress images)."
+	},
+	"extra": {
+		"suggest": {
+			"wkhtmltopdf/wkhtmltopdf": "KerrFairtex relies on wkhtmltopdf to generate PDF reports.",
+			"kornelski/pngquant": "KerrFairtex relies on PNGQuant to compress PNG images."
+		},
+		"self_url": "https://github.com/kerrfairtex/kerrfairtex/raw/mobile/composer.json"
+	}
+}

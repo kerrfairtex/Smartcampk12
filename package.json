@@ -1,0 +1,16 @@
+{
+  "name": "kerrfairtex",
+  "description": "KerrFairtex Student Information System for school management.",
+  "author": "KerrFairtex @kerrfairtex",
+  "license": "GPL-2.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kerrfairtex/kerrfairtex"
+  },
+  "devDependencies": {
+    "grunt": ">=1.3.0",
+    "grunt-contrib-cssmin": "~4.0.0",
+    "grunt-contrib-uglify": "~5.0.1",
+    "grunt-contrib-watch": "~1.1.0"
+  }
+}

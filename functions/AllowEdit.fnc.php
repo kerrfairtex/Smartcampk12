@@ -30,6 +30,12 @@ function AllowEdit( $modname = false, $cache_all = false )
 {
 	global $_ROSARIO;
 
+	// Guest profile is always read-only, regardless of any other flag.
+	if ( User( 'PROFILE' ) === 'guest' )
+	{
+		return false;
+	}
+
 	// Build cache only once.
 	static $cached_all = false;
 

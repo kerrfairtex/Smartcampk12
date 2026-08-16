@@ -597,7 +597,7 @@ if ( empty( $_SESSION['STAFF_ID'] )
 			?>
 		</p>
 		<p class="center size-1">
-			&copy; 2004-2009 The Miller Group &amp; Learners Circle
+			&copy; 2020-2025 The DIKYAMS GROUP &amp; LEARNERS DIKS-A
 			<br />&copy; 2012-2026 <a href="https://www.kerrfairtex.org" rel="noreferrer">KerrFairtex</a>
 		</p>
 	</details>

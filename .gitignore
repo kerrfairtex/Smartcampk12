@@ -348,3 +348,7 @@ plugins/update.sh
 locale/fr_FR.utf8_ParisComSup
 functions/1GetMP.php
 assets/themes/CoolAdmin
+
+# CommandDeck (React console) — commit built static assets
+!commanddeck/dist/
+!commanddeck/dist/**

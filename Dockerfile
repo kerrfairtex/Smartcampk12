@@ -36,6 +36,11 @@ RUN { \
 # Application code
 COPY . /var/www/html/
 
+# Serve the built CommandDeck React console at /commanddeck/ (strip the Vite source tree)
+RUN mv /var/www/html/commanddeck/dist /var/www/html/_commanddeck \
+    && rm -rf /var/www/html/commanddeck \
+    && mv /var/www/html/_commanddeck /var/www/html/commanddeck
+
 # Entrypoint (writes config.inc.php from env, binds Apache to $PORT)
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh

@@ -55,6 +55,7 @@ if ( ! function_exists( 'DashboardUsersAdmin' ) )
 			'teacher' => _( 'Teacher' ),
 			'parent' => _( 'Parent' ),
 			'none' => _( 'No Access' ),
+			'guest' => _( 'Guest' ),
 		];
 
 		foreach ( $users_RET as $users )

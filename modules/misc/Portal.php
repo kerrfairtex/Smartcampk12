@@ -40,6 +40,23 @@ if ( $_REQUEST['modfunc'] === 'poll_vote'
 
 DrawHeader( ProgramTitle() );
 
+// CommandDeck: the ops console IS the dashboard (design applied to the portal).
+// Serve the built console as the post-login home page; module docks link back
+// into the app's real module pages.
+if ( empty( $_REQUEST['modfunc'] ) )
+{
+	$commanddeck_file = __DIR__ . '/../../commanddeck/dist/index.html';
+
+	if ( file_exists( $commanddeck_file ) )
+	{
+		header( 'Content-Type: text/html; charset=utf-8' );
+
+		readfile( $commanddeck_file );
+
+		exit;
+	}
+}
+
 $salute = sprintf( _( 'Good Evening, %s.' ), User( 'NAME' ) );
 
 if ( date( 'H' ) < 12 )

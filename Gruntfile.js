@@ -11,34 +11,6 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
-		watch: {
-			options: {
-				livereload: true,
-			},
-			css: {
-				files: ['assets/themes/**/css/*.css'],
-				tasks: ['cssmin'],
-				/*'autoprefixer', */
-				options: {
-					livereload: true
-				},
-			},
-			js: {
-				files: ['assets/js/**/*.js', '!assets/js/plugins.min.js'],
-				tasks: ['uglify'],
-				options: {
-					livereload: true
-				},
-			},
-			livereload: {
-				// Reload page when css or js files change.
-				files: [
-					'assets/themes/**/css/*.css',
-					'assets/js/**/*.js'
-				]
-			},
-		},
-
 		uglify: {
 			options: {
 				//banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
@@ -122,10 +94,9 @@ module.exports = function(grunt) {
 	/**
 	 * Load all plugins required
 	 */
-	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task(s).
-	grunt.registerTask('default', ['watch']);
+	grunt.registerTask('default', ['cssmin', 'uglify']);
 };

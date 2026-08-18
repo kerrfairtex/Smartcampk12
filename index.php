@@ -21,7 +21,7 @@ if ( isset( $_REQUEST['modfunc'] )
 	header( 'Location: ' . URLEscape( 'index.php?locale=' . $_SESSION['locale'] .
 		( isset( $_REQUEST['redirect_to'] ) ?
 			'&redirect_to=' . urlencode( $_REQUEST['redirect_to'] ) :
-			'' ) );
+			'' ) ) );
 
 	if ( ! empty( $_REQUEST['token'] )
 		&& $_SESSION['token'] === $_REQUEST['token'] )

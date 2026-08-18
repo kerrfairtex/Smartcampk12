@@ -47,6 +47,12 @@ if ( empty( $_REQUEST['modfunc'] ) )
 {
 	$commanddeck_file = __DIR__ . '/../../commanddeck/dist/index.html';
 
+	// Docker image flattens dist into commanddeck/ (see Dockerfile).
+	if ( ! file_exists( $commanddeck_file ) )
+	{
+		$commanddeck_file = __DIR__ . '/../../commanddeck/index.html';
+	}
+
 	if ( file_exists( $commanddeck_file ) )
 	{
 		header( 'Content-Type: text/html; charset=utf-8' );

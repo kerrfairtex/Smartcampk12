@@ -699,6 +699,7 @@ function Warehouse( $mode )
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="token" content="<?php echo AttrEscape( $_SESSION['token'] ); ?>">
 	<link rel="stylesheet" href="<?php echo $stylesheet_css; ?>?<?php echo $stylesheet_css_hash; ?>">
+	<link rel="stylesheet" href="assets/themes/WPadmin/css/smartcamp-2030.css">
 	<style>.highlight,.highlight-hover:hover{background-color:<?php echo Preferences( 'HIGHLIGHT' ); ?> !important;}</style>
 	<?php
 

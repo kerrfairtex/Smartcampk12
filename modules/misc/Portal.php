@@ -1060,8 +1060,8 @@ switch ( User( 'PROFILE' ) )
 
 if ( User( 'PROFILE' ) === 'admin' )
 {
-	// @since 12.2 Security: move KerrFairtex version from Login screen to Portal
-	echo '<p class="size-1">' . sprintf( _( '%s version %s' ), 'KerrFairtex', ROSARIO_VERSION ) . '</p>';
+	// @since 12.2 Security: move SmartCamp-K12 version from Login screen to Portal
+	echo '<p class="size-1">' . sprintf( _( '%s version %s' ), 'SmartCamp-K12', ROSARIO_VERSION ) . '</p>';
 }
 
 /**
@@ -1075,7 +1075,7 @@ function PHPCheck()
 
 	if ( version_compare( PHP_VERSION, '5.5.9' ) == -1 )
 	{
-		$ret[] = 'KerrFairtex requires PHP 5.5.9 to run, your version is : ' . PHP_VERSION;
+		$ret[] = 'SmartCamp-K12 requires PHP 5.5.9 to run, your version is : ' . PHP_VERSION;
 	}
 
 	return $ret;

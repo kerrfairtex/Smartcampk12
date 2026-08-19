@@ -744,7 +744,7 @@ function Warehouse( $mode )
 			?>
 	<div id="body" tabindex="0" role="main" class="mod">
 <?php if ( ! isAJAX() ): ?>
-		<div class="breadcrumbs"></div>
+		<div class="breadcrumbs" data-bc="auto"></div>
 <?php endif; ?>
 <?php
 			/**

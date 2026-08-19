@@ -597,7 +597,7 @@ if ( empty( $_SESSION['STAFF_ID'] )
 			?>
 		</p>
 		<p class="center size-1">
-					&copy; 2012-2026 <a href="https://www.facebook.com/share/1EPdHEvfa9/" rel="noreferrer">KerrFairtex</a>
+					&copy; 2012-2026 <a href="https://www.smartcamp-k12.com" rel="noreferrer">SmartCamp-K12</a>
 						</p>
 	</details>
 

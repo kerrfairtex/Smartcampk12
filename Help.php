@@ -108,7 +108,7 @@ foreach ( (array) $help as $program => $value ) :
 	}
 	else
 	{
-		$program_title = 'KerrFairtex';
+		$program_title = 'SmartCamp-K12';
 
 		// Fix do not use ProgramTitle() (loads Menu.php in English only)
 		// Loop modules.
@@ -144,7 +144,7 @@ foreach ( (array) $help as $program => $value ) :
 <?php endforeach; ?>
 
 <div class="center">
-	<b><a href="https://www.kerrfairtex.org/">https://www.kerrfairtex.org/</a></b>
+	<b><a href="https://www.smartcamp-k12.com/">https://www.smartcamp-k12.com/</a></b>
 </div>
 
 <?php

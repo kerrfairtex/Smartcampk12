@@ -969,7 +969,6 @@ div.updated {
    ========================================================================== */
 
 /* Reset body background for modules page */
-body.modules,
 body {
   background: var(--bg-base) !important;
   color: var(--text-primary);
@@ -1054,4 +1053,338 @@ body {
     margin-left: 0;
     left: 0;
   }
+}
+
+
+/* ==========================================================================
+   CRITICAL: Override all legacy white backgrounds
+   ========================================================================== */
+html, body, #wrap, #body, .mod {
+  background: var(--bg-base) !important;
+  color: var(--text-primary) !important;
+}
+
+.postbox, .widefat, div.error, div.updated {
+  background: var(--bg-surface) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
+}
+
+.postbox > thead th, .widefat th {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+  text-shadow: none !important;
+}
+
+.widefat td {
+  border-color: rgba(255,255,255,0.03) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Fix PopTable (DrawHeader output) */
+.popTable, .postbox {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+  color: var(--text-primary) !important;
+}
+
+.popTable td, .postbox td {
+  color: var(--text-primary) !important;
+}
+
+/* Sidebar menu text truncation fix */
+.menu-top {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-top span:not(.module-icon) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Fix module-icon sizing in sidebar */
+.menu-top .module-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.menu-top .module-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Ensure KPI cards display */
+.kpi-grid {
+  display: grid !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Fix DrawHeader / PopTable headers */
+.header1, .header2 {
+  background: var(--bg-glass) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.header1 h2 {
+  color: var(--text-primary) !important;
+  text-shadow: none !important;
+}
+
+/* Greeting/salute text */
+#salute {
+  color: var(--text-primary) !important;
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+/* Fix legend-gray (used in dashboard module data) */
+.legend-gray {
+  color: var(--text-muted) !important;
+}
+
+.legend-red {
+  color: var(--danger) !important;
+}
+
+/* Admin menu text color */
+.menu-top {
+  color: var(--text-secondary) !important;
+  font-family: var(--font-body) !important;
+  font-size: 13px !important;
+}
+
+.menu-module.active .menu-top {
+  color: var(--text-primary) !important;
+}
+
+/* Submenu dark theme */
+.wp-submenu {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.wp-submenu a {
+  color: var(--text-secondary) !important;
+}
+
+.wp-submenu a:hover {
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-primary) !important;
+}
+
+.wp-submenu .menu-inter {
+  color: var(--text-muted) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* Fix select elements in sidebar */
+#menu-top select {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* Fix today-date */
+#menu .today-date {
+  color: var(--text-muted) !important;
+  font-size: 11px !important;
+}
+
+#menu .username {
+  color: var(--text-primary) !important;
+}
+
+
+/* DrawHeader / page headers */
+.header {
+  width: 100%;
+  border-spacing: 0;
+  background: transparent !important;
+  margin-bottom: 16px;
+}
+
+.header1, .header2 {
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 0 !important;
+  vertical-align: middle;
+}
+
+.header1 h2 {
+  font-family: var(--font-display) !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  text-shadow: none !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.header1 h2 .module-icon {
+  width: 36px !important;
+  height: 36px !important;
+  background-size: contain !important;
+  display: inline-block !important;
+}
+
+.header2 {
+  font-size: 14px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.5 !important;
+}
+
+.header2 a {
+  color: var(--accent) !important;
+}
+
+/* PopTable / postbox content */
+.postbox .popTable {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.popTable {
+  color: var(--text-primary) !important;
+}
+
+.popTable td {
+  padding: 8px 0 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dashboard module dark */
+.dashboard-module-data {
+  color: var(--text-secondary) !important;
+}
+
+.dashboard-module-data td {
+  color: var(--text-primary) !important;
+}
+
+.dashboard-module-title {
+  color: var(--text-primary) !important;
+  font-family: var(--font-display) !important;
+  font-size: 16px !important;
+}
+
+.dashboard-module-title .module-icon {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+/* Fix for greeting text (size-3 class) */
+.size-3 {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+}
+
+.size-1 {
+  font-size: 13px !important;
+  color: var(--text-muted) !important;
+}
+
+/* Fix for the salute/greeting */
+#salute, [id="salute"] {
+  font-family: var(--font-display) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Fix error message backgrounds */
+div.error {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #FCA5A5 !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+div.updated {
+  background: rgba(34, 197, 94, 0.1) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #86EFAC !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* Fix a11y skip link on dark */
+#footerwrap .a11y-hidden {
+  color: var(--text-primary) !important;
+}
+
+/* Fix for any inline white bg */
+[style*="background: #fff"],
+[style*="background: white"],
+[style*="background: #f9f9f9"],
+[style*="background-color: #fff"],
+[style*="background-color: white"] {
+  background: var(--bg-surface) !important;
+}
+
+/* Fix legend colors on dark */
+.legend-gray {
+  color: var(--text-muted) !important;
+}
+
+.legend-red {
+  color: var(--danger) !important;
+}
+
+/* Make sure wrapper is transparent */
+#wrap {
+  background: var(--bg-base) !important;
+  height: 100%;
+}
+
+/* Body needs padding at bottom for fixed footer */
+#body {
+  padding-bottom: 70px !important;
+}
+
+
+/* Sidebar truncation fix */
+.menu-top {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+}
+
+.menu-top > span:not(.module-icon) {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.menu-top .module-icon {
+  flex-shrink: 0 !important;
+}
+
+/* Ensure submenu items don't overflow */
+.wp-submenu a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
 }

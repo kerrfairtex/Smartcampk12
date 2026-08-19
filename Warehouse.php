@@ -743,6 +743,9 @@ function Warehouse( $mode )
 
 			?>
 	<div id="body" tabindex="0" role="main" class="mod">
+<?php if ( ! isAJAX() ): ?>
+		<div class="breadcrumbs"></div>
+<?php endif; ?>
 <?php
 			/**
 			 * Hook.
@@ -839,6 +842,7 @@ function WarehouseHeaderJS()
 	<script src="assets/js/jquery.js?v=3.7.1"></script>
 	<script src="assets/js/plugins.min.js?<?php echo $plugins_min_js_hash; ?>"></script>
 	<script src="assets/js/jscalendar/lang/calendar-<?php echo file_exists( 'assets/js/jscalendar/lang/calendar-' . $lang_2_chars . '.js' ) ? $lang_2_chars : 'en'; ?>.js"></script>
+	<script src="assets/themes/WPadmin/js/smartcamp-2030.js"></script>
 	<?php
 	// Add scripts.js file from theme if any found.
 	if ( file_exists( 'assets/themes/' . Preferences( 'THEME' ) . '/scripts.js' ) ): ?>

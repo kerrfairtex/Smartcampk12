@@ -117,10 +117,17 @@ echo ErrorMessage( $note, 'note' );
 
 echo ErrorMessage( $warning, 'warning' );
 
+// ── SmartCamp KPI Cards (Admin Only) ────────────────────────────────────
 if ( User( 'PROFILE' ) === 'admin' )
 {
-	// Dashboard.
-	(new KerrFairtex\Functions\Dashboard)->output();
+    require_once 'modules/misc/includes/SmartCampKPI.fnc.php';
+    echo SmartCamp_KPICards();
+}
+
+if ( User( 'PROFILE' ) === 'admin' )
+{
+    // Dashboard.
+    (new KerrFairtex\Functions\Dashboard)->output();
 }
 
 $portal_LO_options = [ 'save' => false, 'search' => false ];

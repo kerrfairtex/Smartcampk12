@@ -78,9 +78,11 @@ a:hover { color: #33DDFF; }
   width: 240px;
   height: 100vh;
   min-height: 100vh;
-  background: var(--bg-glass-sidebar);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  /* Opaque dark surface instead of backdrop-filter: blur(...). The blur
+     would establish #menu as a containing block for fixed-positioned
+     descendants (per CSS spec), clipping the .wp-submenu dropdowns
+     because the menu is only 240px wide. */
+  background: #0D1017;
   border-right: 1px solid var(--border-subtle);
   position: fixed;
   left: 0;
@@ -307,18 +309,16 @@ a:hover { color: #33DDFF; }
   left: 240px;
   top: auto;
   min-width: 200px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(19, 23, 34, 0.98);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 6px;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px) scale(0.96);
   transition: all var(--transition-fast);
-  z-index: 200;
+  z-index: 1500 !important;
 }
 
 .wp-submenu li {
@@ -349,12 +349,17 @@ a:hover { color: #33DDFF; }
   font-weight: 600;
 }
 
-/* Show submenu on parent hover */
-.menu-module:hover > .wp-submenu {
+/* Show submenu on parent hover (and keep visible while hovering the submenu
+   itself, so the user can move the mouse across without losing the menu) */
+.menu-module:hover > .wp-submenu,
+.wp-submenu:hover {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
 }
+
+/* No transition delay on close so the submenu feels responsive. The hover
+   on the submenu itself keeps it open while the mouse moves into it. */
 
 /* ==========================================================================
    HEADER / TOP BAR

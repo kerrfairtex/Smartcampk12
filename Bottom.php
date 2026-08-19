@@ -23,10 +23,10 @@ if ( empty( $_REQUEST['bottomfunc'] ) ) : ?>
 			<?php echo _( 'Skip to main content' ); // Accessibility link to skip menus. ?>
 		</a>
 		<a id="BottomButtonMenu" href="#!" title="<?php echo AttrEscape( _( 'Menu' ) ); ?>" class="BottomButton">
-			<svg viewBox="0 0 24 24">
-				<line x1="3" y1="12" x2="21" y2="12"></line>
-				<line x1="3" y1="6" x2="21" y2="6"></line>
-				<line x1="3" y1="18" x2="21" y2="18"></line>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<line x1="3" y1="6" x2="21" y2="6"/>
+				<line x1="3" y1="12" x2="21" y2="12"/>
+				<line x1="3" y1="18" x2="21" y2="18"/>
 			</svg>
 			<span><?php echo _( 'Menu' ); ?></span>
 		</a>
@@ -73,7 +73,10 @@ if ( empty( $_REQUEST['bottomfunc'] ) ) : ?>
 
 			<a href="<?php echo URLEscape( $back_url ); ?>" title="<?php echo AttrEscape( $back_text ); ?>"
 				id="BottomButtonBack" class="BottomButton<?php echo $back_url ? '' : ' hide'; ?>">
-				<img src="<?php echo $btn_path; ?>back.png" alt="">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M19 12H5"/>
+					<path d="M12 19l-7-7 7-7"/>
+				</svg>
 				<span><?php echo $back_text; ?></span>
 			</a>
 
@@ -87,15 +90,28 @@ if ( empty( $_REQUEST['bottomfunc'] ) ) : ?>
 		do_action( 'Bottom.php|bottom_buttons' ); ?>
 
 		<a id="BottomButtonPrint" href="" target="_blank" title="<?php echo AttrEscape( _( 'Print' ) ); ?>" class="BottomButton">
-			<img src="<?php echo $btn_path; ?>print.png" alt="">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M6 9V2h12v7"/>
+				<rect x="6" y="14" width="12" height="8" rx="1"/>
+				<line x1="6" y1="18" x2="18" y2="18"/>
+				<circle cx="18" cy="14" r="1" fill="currentColor"/>
+			</svg>
 			<span><?php echo _( 'Print' ); ?></span>
 		</a>
 		<a id="BottomButtonHelp" href="#!" title="<?php echo AttrEscape( _( 'Help' ) ); ?>" class="BottomButton">
-			<img src="<?php echo $btn_path; ?>help.png" alt="">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="12" cy="12" r="10"/>
+				<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+				<line x1="12" y1="17" x2="12.01" y2="17"/>
+			</svg>
 			<span><?php echo _( 'Help' ); ?></span>
 		</a>
 		<a href="index.php?modfunc=logout" target="_top" title="<?php echo AttrEscape( _( 'Logout' ) ); ?>" class="BottomButton">
-			<img src="<?php echo $btn_path; ?>logout.png" alt="">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+				<polyline points="16 17 21 12 16 7"/>
+				<line x1="21" y1="12" x2="9" y2="12"/>
+			</svg>
 			<span><?php echo _( 'Logout' ); ?></span>
 		</a>
 		<span class="loading BottomButton"></span>
@@ -146,7 +162,6 @@ elseif ( $_REQUEST['bottomfunc'] === 'print' ) :
 		}
 		else
 			require_once 'modules/' . $modname;
-
 	}
 	// Not allowed, hacking attempt?
 	elseif ( User( 'USERNAME' ) )

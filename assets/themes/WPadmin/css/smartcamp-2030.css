@@ -1570,3 +1570,70 @@ div.updated {
     padding: 0 12px;
   }
 }
+
+
+/* ==========================================================================
+   PHASE 3: Header + Greeting Card
+   ========================================================================== */
+
+/* Greeting bar (DrawHeader output) */
+.header {
+  width: 100%;
+  border-spacing: 0;
+  margin-bottom: 24px;
+  background: transparent !important;
+}
+
+.header1, .header2 {
+  background: #131722 !important;
+  border: 1px solid #1E2433 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  color: #E8EAED !important;
+  vertical-align: top;
+}
+
+.header1 h2 {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #E8EAED !important;
+  text-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  letter-spacing: -0.3px;
+}
+
+.header2 {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #E8EAED !important;
+  margin-top: 16px !important;
+}
+
+.header2 a {
+  color: #00D9FF !important;
+}
+
+.header2 b {
+  color: #E8EAED !important;
+  font-weight: 600;
+}
+
+/* Salute text */
+#salute {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #E8EAED !important;
+}
+
+/* Error messages in greeting area */
+.header2 div.error,
+.header2 .error {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: #FCA5A5 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}

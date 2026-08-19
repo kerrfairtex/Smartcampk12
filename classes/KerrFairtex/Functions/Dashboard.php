@@ -85,35 +85,35 @@ class Dashboard
 
 		PopTable( 'header', _( 'Dashboard' ), 'width="100%"' );
 
-		?>
-		<table class="dashboard width-100p valign-top fixed-col"><tr class="st">
-		<?php
+		echo '<div class="kpi-grid">';
 
-		if ( $rows < 1 )
-		{
-			$rows = 4;
+		$module_colors = [
+			'School_Setup' => 'violet',
+			'Students' => 'cyan',
+			'Users' => 'green',
+			'Scheduling' => 'amber',
+			'Grades' => 'red',
+			'Attendance' => 'teal',
+			'Discipline' => 'violet',
+			'Accounting' => 'green',
+			'Student_Billing' => 'amber',
+			'Food_Service' => 'teal',
+		];
+
+		$i = 0;
+		foreach ( $this->dashboard as $module => $html ) {
+			$color = $module_colors[$module] ?? 'cyan';
+			$color_hex = ($color == 'violet' ? '#7C5CFF' : ($color == 'cyan' ? '#00D9FF' : ($color == 'green' ? '#22D3A8' : ($color == 'amber' ? '#FFB020' : ($color == 'red' ? '#FF6B6B' : '#4EA8DE')))));
+			echo '<div class="kpi-card accent-' . $color . '" data-count="0" data-label="' . $module . '" data-color="' . $color_hex . '">';
+			echo '<div class="kpi-card-header"><div class="kpi-card-icon"></div><div class="sparkline-container"></div></div>';
+			echo '<div class="kpi-value">0</div>';
+			echo '<div class="kpi-label">' . _( str_replace( '_', ' ', $module ) ) . '</div>';
+			echo '<div class="kpi-card-inner">' . $html . '</div>';
+			echo '</div>';
+			$i++;
 		}
 
-		$row = 0;
-
-		// Output Dashboard modules, 4 per row.
-
-		foreach ( $this->dashboard as $html ): ?>
-
-			<td><?php echo $html; ?></td>
-
-			<?php
-
-		if ( ++$row % $rows === 0 ): ?>
-
-				</tr><tr class="st">
-
-			<?php endif;
-		endforeach;
-
-		?>
-		</tr></table>
-		<?php
+		echo '</div>';
 
 		PopTable( 'footer' );
 	}

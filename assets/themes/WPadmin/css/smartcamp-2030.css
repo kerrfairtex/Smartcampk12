@@ -1637,3 +1637,152 @@ div.updated {
   border-radius: 8px !important;
   padding: 8px 12px !important;
 }
+
+
+/* ==========================================================================
+   PHASE 4: Dashboard KPI Cards — elevated, count-up, hover lift
+   ========================================================================== */
+
+.kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+.kpi-card {
+  background: #131722 !important;
+  border: 1px solid #1E2433 !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: transform 200ms ease, box-shadow 200ms ease !important;
+  cursor: default !important;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 217, 255, 0.08) !important;
+}
+
+.kpi-card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 16px !important;
+}
+
+.kpi-card-icon {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid #1E2433 !important;
+}
+
+.kpi-card-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sparkline-container {
+  width: 80px !important;
+  height: 32px !important;
+}
+
+.sparkline-container svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.kpi-value {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 600 !important;
+  color: #E8EAED !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
+}
+
+.kpi-label {
+  font-size: 12px !important;
+  color: #8B93A7 !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.kpi-change {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  margin-top: 8px !important;
+  padding: 2px 8px !important;
+  border-radius: 20px !important;
+}
+
+.kpi-change.positive {
+  color: #22D3A8 !important;
+  background: rgba(34, 211, 168, 0.1) !important;
+}
+
+.kpi-change.negative {
+  color: #FF6B6B !important;
+  background: rgba(255, 107, 107, 0.1) !important;
+}
+
+.kpi-change.neutral {
+  color: #8B93A7 !important;
+  background: rgba(139, 147, 167, 0.1) !important;
+}
+
+/* Module accent colors on cards */
+.kpi-card.accent-violet .kpi-card-icon { background: rgba(124, 92, 255, 0.1) !important; border-color: rgba(124, 92, 255, 0.2) !important; }
+.kpi-card.accent-violet .kpi-card-icon svg { stroke: #7C5CFF !important; }
+.kpi-card.accent-cyan .kpi-card-icon { background: rgba(0, 217, 255, 0.1) !important; border-color: rgba(0, 217, 255, 0.2) !important; }
+.kpi-card.accent-cyan .kpi-card-icon svg { stroke: #00D9FF !important; }
+.kpi-card.accent-green .kpi-card-icon { background: rgba(34, 211, 168, 0.1) !important; border-color: rgba(34, 211, 168, 0.2) !important; }
+.kpi-card.accent-green .kpi-card-icon svg { stroke: #22D3A8 !important; }
+.kpi-card.accent-amber .kpi-card-icon { background: rgba(255, 176, 32, 0.1) !important; border-color: rgba(255, 176, 32, 0.2) !important; }
+.kpi-card.accent-amber .kpi-card-icon svg { stroke: #FFB020 !important; }
+.kpi-card.accent-teal .kpi-card-icon { background: rgba(78, 168, 222, 0.1) !important; border-color: rgba(78, 168, 222, 0.2) !important; }
+.kpi-card.accent-teal .kpi-card-icon svg { stroke: #4EA8DE !important; }
+
+
+/* KPI card inner content (legacy dashboard module data) */
+.kpi-card-inner {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #8B93A7;
+}
+
+.kpi-card-inner table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.kpi-card-inner td {
+  padding: 4px 0;
+  border: none;
+  color: #8B93A7;
+}
+
+.kpi-card-inner td:last-child {
+  text-align: right;
+  color: #E8EAED;
+  font-weight: 500;
+}
+
+.kpi-card-inner .legend-gray {
+  color: #8B93A7 !important;
+}
+
+.kpi-card-inner h3 {
+  display: none;
+}

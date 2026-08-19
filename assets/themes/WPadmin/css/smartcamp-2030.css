@@ -7,18 +7,18 @@
 
 :root {
   --bg-base: #0B0E14;
-  --bg-surface: #12161D;
-  --bg-elevated: #1A1F28;
-  --bg-glass: rgba(18, 22, 29, 0.72);
-  --border-subtle: rgba(255,255,255,0.06);
-  --border-accent: rgba(0, 200, 255, 0.25);
+  --bg-surface: #131722;
+  --bg-elevated: #131722;
+  --bg-glass-sidebar: rgba(13, 16, 23, 0.85);
+  --border-subtle: #1E2433;
+  --border-accent: rgba(0, 217, 255, 0.25);
   --accent: #00D9FF;
-  --accent-glow: rgba(0, 200, 255, 0.35);
-  --accent-violet: #A855F7;
-  --accent-teal: #14B8A6;
-  --text-primary: #E8ECF1;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --accent-glow: rgba(0, 217, 255, 0.35);
+  --accent-violet: #7C5CFF;
+  --accent-teal: #4EA8DE;
+  --text-primary: #E8EAED;
+  --text-secondary: #8B93A7;
+  --text-muted: #8B93A7;
   --success: #22C55E;
   --warning: #F59E0B;
   --danger: #EF4444;
@@ -41,7 +41,7 @@ html {
   background: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 14px; /* body */
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -76,7 +76,7 @@ a:hover { color: #33DDFF; }
 #menu {
   width: 240px;
   min-height: 100vh;
-  background: var(--bg-glass);
+  background: var(--bg-glass-sidebar);
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   border-right: 1px solid var(--border-subtle);
@@ -582,6 +582,7 @@ a:hover { color: #33DDFF; }
 }
 
 .kpi-label {
+  font-size: 12px;
   font-size: 12px;
   color: var(--text-muted);
   font-weight: 500;
@@ -1227,7 +1228,7 @@ html, body, #wrap, #body, .mod {
 
 .header1 h2 {
   font-family: var(--font-display) !important;
-  font-size: 24px !important;
+  font-size: 20px !important;
   font-weight: 700 !important;
   color: var(--text-primary) !important;
   text-shadow: none !important;

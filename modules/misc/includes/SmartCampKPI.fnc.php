@@ -119,20 +119,21 @@ function SmartCamp_KPICards() {
     }
 
     // ── Attendance: Today's Present ────────────────────────────────────────
-    $attendance_today = DBGetOne("SELECT COUNT(*)
-        FROM attendance_day ad
-        JOIN course_periods cp ON cp.COURSE_PERIOD_ID=ad.COURSE_PERIOD_ID
-        WHERE ad.SCHOOL_DATE=CURRENT_DATE
-        AND ad.SYEAR='" . UserSyear() . "'
+    // Note: attendance_period holds per-period records with state_value
+    $attendance_present = DBGetOne("SELECT COUNT(*)
+        FROM kerrfairtex.attendance_period ap
+        JOIN kerrfairtex.course_periods cp ON cp.COURSE_PERIOD_ID=ap.COURSE_PERIOD_ID
+        WHERE ap.SCHOOL_DATE=CURRENT_DATE
+        AND cp.SYEAR='" . UserSyear() . "'
         AND cp.SCHOOL_ID='" . UserSchool() . "'
-        AND ad.STATE_VALUE='1'");
+        AND ap.STATE_VALUE=1");
 
-    $attendance_today = (int) $attendance_today;
+    $attendance_present = (int) $attendance_present;
 
-    if ($attendance_today > 0) {
+    if ($attendance_present > 0) {
         $cards[] = [
             'label' => 'Present Today',
-            'value' => $attendance_today,
+            'value' => $attendance_present,
             'icon' => 'check-circle',
             'color' => '#14B8A6',
             'accent' => 'teal',

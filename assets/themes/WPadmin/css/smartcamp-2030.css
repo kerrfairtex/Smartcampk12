@@ -12,7 +12,7 @@
   --bg-glass: rgba(18, 22, 29, 0.72);
   --border-subtle: rgba(255,255,255,0.06);
   --border-accent: rgba(0, 200, 255, 0.25);
-  --accent: #00C8FF;
+  --accent: #00D9FF;
   --accent-glow: rgba(0, 200, 255, 0.35);
   --accent-violet: #A855F7;
   --accent-teal: #14B8A6;
@@ -58,7 +58,7 @@ a {
   transition: color var(--transition-fast);
 }
 
-a:hover { color: #2DD4FF; }
+a:hover { color: #33DDFF; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -286,7 +286,7 @@ a:hover { color: #2DD4FF; }
 .menu-module.active.School_Setup .module-icon { background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); box-shadow: 0 0 8px rgba(168, 85, 247, 0.2); }
 .menu-module.active.School_Setup .module-icon svg { stroke: #A855F7; }
 .menu-module.active.Students .module-icon { background: rgba(0, 200, 255, 0.15); border-color: rgba(0, 200, 255, 0.3); box-shadow: 0 0 8px rgba(0, 200, 255, 0.2); }
-.menu-module.active.Students .module-icon svg { stroke: #00C8FF; }
+.menu-module.active.Students .module-icon svg { stroke: #00D9FF; }
 .menu-module.active.Users .module-icon { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 8px rgba(34, 197, 94, 0.2); }
 .menu-module.active.Users .module-icon svg { stroke: #22C55E; }
 .menu-module.active.Scheduling .module-icon { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 0 8px rgba(245, 158, 11, 0.2); }
@@ -507,7 +507,7 @@ a:hover { color: #2DD4FF; }
 
 .kpi-card:hover::before { opacity: 1; }
 
-.kpi-card.accent-cyan::before { background: linear-gradient(90deg, #00C8FF, #2DD4FF); }
+.kpi-card.accent-cyan::before { background: linear-gradient(90deg, #00D9FF, #33DDFF); }
 .kpi-card.accent-violet::before { background: linear-gradient(90deg, #A855F7, #C084FC); }
 .kpi-card.accent-green::before { background: linear-gradient(90deg, #22C55E, #4ADE80); }
 .kpi-card.accent-amber::before { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
@@ -540,7 +540,7 @@ a:hover { color: #2DD4FF; }
 }
 
 .accent-cyan .kpi-card-icon { background: rgba(0, 200, 255, 0.1); border-color: rgba(0, 200, 255, 0.2); }
-.accent-cyan .kpi-card-icon svg { stroke: #00C8FF; }
+.accent-cyan .kpi-card-icon svg { stroke: #00D9FF; }
 .accent-violet .kpi-card-icon { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2); }
 .accent-violet .kpi-card-icon svg { stroke: #A855F7; }
 .accent-green .kpi-card-icon { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); }
@@ -561,7 +561,7 @@ a:hover { color: #2DD4FF; }
   stroke-linejoin: round;
 }
 
-.accent-cyan .sparkline path { stroke: #00C8FF; }
+.accent-cyan .sparkline path { stroke: #00D9FF; }
 .accent-violet .sparkline path { stroke: #A855F7; }
 .accent-green .sparkline path { stroke: #22C55E; }
 .accent-amber .sparkline path { stroke: #F59E0B; }
@@ -651,7 +651,7 @@ button:active,
 
 input.button-primary,
 .button-primary {
-  background: linear-gradient(135deg, #00A3CC, #00C8FF);
+  background: linear-gradient(135deg, #00C4E6, #00D9FF);
   border-color: rgba(0, 200, 255, 0.4);
   color: #0B0E14;
   font-weight: 600;
@@ -660,7 +660,7 @@ input.button-primary,
 
 input.button-primary:hover,
 .button-primary:hover {
-  background: linear-gradient(135deg, #00B8EE, #2DD4FF);
+  background: linear-gradient(135deg, #00D9FF, #33DDFF);
   box-shadow: 0 4px 20px rgba(0, 200, 255, 0.35);
 }
 

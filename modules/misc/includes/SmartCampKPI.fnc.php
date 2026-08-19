@@ -118,29 +118,7 @@ function SmartCamp_KPICards() {
         ];
     }
 
-    // ── Attendance: Today's Present ────────────────────────────────────────
-    // Note: attendance_period holds per-period records with state_value
-    $attendance_present = DBGetOne("SELECT COUNT(*)
-        FROM kerrfairtex.attendance_period ap
-        JOIN kerrfairtex.course_periods cp ON cp.COURSE_PERIOD_ID=ap.COURSE_PERIOD_ID
-        WHERE ap.SCHOOL_DATE=CURRENT_DATE
-        AND cp.SYEAR='" . UserSyear() . "'
-        AND cp.SCHOOL_ID='" . UserSchool() . "'
-        AND ap.STATE_VALUE=1");
-
-    $attendance_present = (int) $attendance_present;
-
-    if ($attendance_present > 0) {
-        $cards[] = [
-            'label' => 'Present Today',
-            'value' => $attendance_present,
-            'icon' => 'check-circle',
-            'color' => '#14B8A6',
-            'accent' => 'teal',
-            'change' => null,
-            'live' => true,
-        ];
-    }
+    // ── Attendance: Today's Present (skipped — attendance_period empty, no state_value column) ──
 
     // ── Render Cards ───────────────────────────────────────────────────────
     if (empty($cards)) return '';

@@ -4,9 +4,7 @@
  * Integrates database metrics and authentication with the smartcamk12.html UI.
  */
 
-session_name('SmartCampusSession');
-session_start();
-
+// session_start() handled by Warehouse.php
 require_once 'Warehouse.php';
 
 // Handle login submission

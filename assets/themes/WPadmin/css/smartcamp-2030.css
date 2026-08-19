@@ -1104,7 +1104,7 @@ html, body, #wrap, #body, .mod {
   text-overflow: ellipsis;
 }
 
-.menu-top span:not(.module-icon) {
+.menu-top .menu-top-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1387,4 +1387,16 @@ div.updated {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 220px;
+}
+
+
+/* Sidebar label truncation */
+.menu-top-label {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    vertical-align: middle;
 }

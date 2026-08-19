@@ -748,9 +748,8 @@ if ( ! isset( $_REQUEST['sidefunc'] )
 					echo $icons[$menu_i];
 				}
 				?>
-				</span>
-				&nbsp;<?php echo $modcat_menu['title']; ?>
-			</a>
+				</span><span class="menu-top-label">&nbsp;<?php echo $modcat_menu['title']; ?></span>
+				</a>
 		<ul id="menu_<?php echo $menu_i; ?>" class="wp-submenu">
 		<?php
 		unset(

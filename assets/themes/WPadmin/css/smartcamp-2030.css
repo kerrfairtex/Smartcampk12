@@ -1401,3 +1401,172 @@ div.updated {
     min-width: 0;
     vertical-align: middle;
 }
+
+
+/* ==========================================================================
+   PHASE 2: Sidebar — 44px rows, animated accent bar
+   ========================================================================== */
+
+#menu {
+  width: 240px;
+  min-height: 100vh;
+  background: rgba(13, 16, 23, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid #1E2433;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform 200ms ease, width 200ms ease;
+  overflow: hidden;
+}
+
+.menu-module {
+  position: relative;
+  margin: 2px 8px;
+}
+
+.menu-module > a.menu-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: #8B93A7;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 150ms ease;
+  border: 1px solid transparent;
+  position: relative;
+  text-decoration: none;
+}
+
+.menu-module > a.menu-top:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #E8EAED;
+}
+
+/* Active item: animated accent bar */
+.menu-module.active > a.menu-top {
+  background: rgba(0, 217, 255, 0.08);
+  border-color: rgba(0, 217, 255, 0.25);
+  color: #E8EAED;
+  box-shadow: 0 0 12px rgba(0, 217, 255, 0.08);
+}
+
+.menu-module.active > a.menu-top::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: #00D9FF;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 8px rgba(0, 217, 255, 0.35);
+}
+
+/* Label truncation */
+.menu-top-label {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  vertical-align: middle;
+}
+
+/* Module icon */
+.menu-top .module-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-top .module-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Module category colors */
+.menu-module.active.Students > a.menu-top::before { background: #7C5CFF; box-shadow: 0 0 8px rgba(124, 92, 255, 0.4); }
+.menu-module.active.Users > a.menu-top::before { background: #22D3A8; box-shadow: 0 0 8px rgba(34, 211, 168, 0.4); }
+.menu-module.active.Scheduling > a.menu-top::before { background: #FFB020; box-shadow: 0 0 8px rgba(255, 176, 32, 0.4); }
+.menu-module.active.Grades > a.menu-top::before { background: #FF6B6B; box-shadow: 0 0 8px rgba(255, 107, 107, 0.4); }
+.menu-module.active.Attendance > a.menu-top::before { background: #4EA8DE; box-shadow: 0 0 8px rgba(78, 168, 222, 0.4); }
+.menu-module.active.School_Setup > a.menu-top::before { background: #A855F7; box-shadow: 0 0 8px rgba(168, 85, 247, 0.4); }
+
+/* Responsive collapse */
+@media only screen and (max-width: 1023px) {
+  #menu {
+    width: 64px;
+  }
+
+  #menu .logo,
+  #menu-top .today-date,
+  #menu-top .username,
+  #menu-top select,
+  .current-person a,
+  .menu-top-label,
+  .menu-inter,
+  .wp-submenu {
+    display: none !important;
+  }
+
+  .menu-module > a.menu-top {
+    justify-content: center;
+    padding: 0;
+  }
+
+  #body {
+    margin-left: 64px;
+  }
+
+  #footer {
+    left: 64px;
+  }
+}
+
+@media only screen and (max-width: 479px) {
+  #menu {
+    transform: translateX(-100%);
+    width: 240px;
+  }
+
+  #menu.slide {
+    transform: translateX(0);
+  }
+
+  #menu .logo,
+  #menu-top .today-date,
+  #menu-top .username,
+  #menu-top select,
+  .current-person a,
+  .menu-top-label,
+  .menu-inter,
+  .wp-submenu {
+    display: block !important;
+  }
+
+  #body {
+    margin-left: 0;
+  }
+
+  #footer {
+    left: 0;
+  }
+
+  .menu-module > a.menu-top {
+    justify-content: flex-start;
+    padding: 0 12px;
+  }
+}

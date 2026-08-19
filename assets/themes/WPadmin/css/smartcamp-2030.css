@@ -1,9 +1,10 @@
 /* ==========================================================================
-   SMARTCAMP-K12 — 2030 Professional UI
-   Dark glassmorphic theme with electric cyan accent
+   SMARTCAMP-K12 — Professional UI
+   Dark glassmorphic theme with electric cyan accent.
+   Consolidated design system (Phase B): no PHASE 2/3/4 duplicate blocks,
+   no CRITICAL !important storm. Google Fonts are loaded from Warehouse.php
+   with display=swap to avoid render-blocking.
    ========================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :root {
   --bg-base: #0B0E14;
@@ -29,8 +30,8 @@
   --shadow-glow: 0 0 20px rgba(0, 200, 255, 0.12), 0 4px 24px rgba(0,0,0,0.4);
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, sans-serif;
 }
 
 /* Reset & Base */
@@ -75,6 +76,7 @@ a:hover { color: #33DDFF; }
 
 #menu {
   width: 240px;
+  height: 100vh;
   min-height: 100vh;
   background: var(--bg-glass-sidebar);
   backdrop-filter: blur(20px) saturate(1.2);
@@ -83,11 +85,12 @@ a:hover { color: #33DDFF; }
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 1000;
+  z-index: 1000 !important;
   display: flex;
   flex-direction: column;
   transition: transform var(--transition-smooth), width var(--transition-smooth);
   overflow: hidden;
+  visibility: visible;
 }
 
 #menu::before {
@@ -1056,448 +1059,9 @@ body {
   }
 }
 
-
 /* ==========================================================================
-   CRITICAL: Override all legacy white backgrounds
+   PER-MODULE ACTIVE ACCENT COLORS
    ========================================================================== */
-html, body, #wrap, #body, .mod {
-  background: var(--bg-base) !important;
-  color: var(--text-primary) !important;
-}
-
-.postbox, .widefat, div.error, div.updated {
-  background: var(--bg-surface) !important;
-  border-color: var(--border-subtle) !important;
-  color: var(--text-primary) !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
-}
-
-.postbox > thead th, .widefat th {
-  background: var(--bg-elevated) !important;
-  border-color: var(--border-subtle) !important;
-  color: var(--text-secondary) !important;
-  text-shadow: none !important;
-}
-
-.widefat td {
-  border-color: rgba(255,255,255,0.03) !important;
-  color: var(--text-primary) !important;
-}
-
-/* Fix PopTable (DrawHeader output) */
-.popTable, .postbox {
-  background: var(--bg-surface) !important;
-  border: 1px solid var(--border-subtle) !important;
-  border-radius: var(--radius-lg) !important;
-  padding: 16px !important;
-  margin-bottom: 16px !important;
-  color: var(--text-primary) !important;
-}
-
-.popTable td, .postbox td {
-  color: var(--text-primary) !important;
-}
-
-/* Sidebar menu text truncation fix */
-.menu-top {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.menu-top .menu-top-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
-}
-
-/* Fix module-icon sizing in sidebar */
-.menu-top .module-icon {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-}
-
-.menu-top .module-icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* Ensure KPI cards display */
-.kpi-grid {
-  display: grid !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Fix DrawHeader / PopTable headers */
-.header1, .header2 {
-  background: var(--bg-glass) !important;
-  border-color: var(--border-subtle) !important;
-}
-
-.header1 h2 {
-  color: var(--text-primary) !important;
-  text-shadow: none !important;
-}
-
-/* Greeting/salute text */
-#salute {
-  color: var(--text-primary) !important;
-  font-family: var(--font-display);
-  font-size: 18px;
-}
-
-/* Fix legend-gray (used in dashboard module data) */
-.legend-gray {
-  color: var(--text-muted) !important;
-}
-
-.legend-red {
-  color: var(--danger) !important;
-}
-
-/* Admin menu text color */
-.menu-top {
-  color: var(--text-secondary) !important;
-  font-family: var(--font-body) !important;
-  font-size: 13px !important;
-}
-
-.menu-module.active .menu-top {
-  color: var(--text-primary) !important;
-}
-
-/* Submenu dark theme */
-.wp-submenu {
-  background: var(--bg-glass) !important;
-  backdrop-filter: blur(16px) !important;
-  border: 1px solid var(--border-subtle) !important;
-  box-shadow: var(--shadow-glow) !important;
-}
-
-.wp-submenu a {
-  color: var(--text-secondary) !important;
-}
-
-.wp-submenu a:hover {
-  background: rgba(255,255,255,0.06) !important;
-  color: var(--text-primary) !important;
-}
-
-.wp-submenu .menu-inter {
-  color: var(--text-muted) !important;
-  border-color: var(--border-subtle) !important;
-}
-
-/* Fix select elements in sidebar */
-#menu-top select {
-  background: var(--bg-elevated) !important;
-  border: 1px solid var(--border-subtle) !important;
-  color: var(--text-primary) !important;
-  border-radius: var(--radius-sm) !important;
-}
-
-/* Fix today-date */
-#menu .today-date {
-  color: var(--text-muted) !important;
-  font-size: 11px !important;
-}
-
-#menu .username {
-  color: var(--text-primary) !important;
-}
-
-
-/* DrawHeader / page headers */
-.header {
-  width: 100%;
-  border-spacing: 0;
-  background: transparent !important;
-  margin-bottom: 16px;
-}
-
-.header1, .header2 {
-  background: transparent !important;
-  border: none !important;
-  padding: 8px 0 !important;
-  vertical-align: middle;
-}
-
-.header1 h2 {
-  font-family: var(--font-display) !important;
-  font-size: 20px !important;
-  font-weight: 700 !important;
-  color: var(--text-primary) !important;
-  text-shadow: none !important;
-  margin: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-
-.header1 h2 .module-icon {
-  width: 36px !important;
-  height: 36px !important;
-  background-size: contain !important;
-  display: inline-block !important;
-}
-
-.header2 {
-  font-size: 14px !important;
-  color: var(--text-secondary) !important;
-  line-height: 1.5 !important;
-}
-
-.header2 a {
-  color: var(--accent) !important;
-}
-
-/* PopTable / postbox content */
-.postbox .popTable {
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-.popTable {
-  color: var(--text-primary) !important;
-}
-
-.popTable td {
-  padding: 8px 0 !important;
-  color: var(--text-primary) !important;
-}
-
-/* Dashboard module dark */
-.dashboard-module-data {
-  color: var(--text-secondary) !important;
-}
-
-.dashboard-module-data td {
-  color: var(--text-primary) !important;
-}
-
-.dashboard-module-title {
-  color: var(--text-primary) !important;
-  font-family: var(--font-display) !important;
-  font-size: 16px !important;
-}
-
-.dashboard-module-title .module-icon {
-  width: 28px !important;
-  height: 28px !important;
-}
-
-/* Fix for greeting text (size-3 class) */
-.size-3 {
-  font-size: 11px !important;
-  color: var(--text-secondary) !important;
-}
-
-.size-1 {
-  font-size: 13px !important;
-  color: var(--text-muted) !important;
-}
-
-/* Fix for the salute/greeting */
-#salute, [id="salute"] {
-  font-family: var(--font-display) !important;
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  color: var(--text-primary) !important;
-}
-
-/* Fix error message backgrounds */
-div.error {
-  background: rgba(239, 68, 68, 0.1) !important;
-  border-color: rgba(239, 68, 68, 0.3) !important;
-  color: #FCA5A5 !important;
-  border-radius: var(--radius-lg) !important;
-}
-
-div.updated {
-  background: rgba(34, 197, 94, 0.1) !important;
-  border-color: rgba(34, 197, 94, 0.3) !important;
-  color: #86EFAC !important;
-  border-radius: var(--radius-lg) !important;
-}
-
-/* Fix a11y skip link on dark */
-#footerwrap .a11y-hidden {
-  color: var(--text-primary) !important;
-}
-
-/* Fix for any inline white bg */
-[style*="background: #fff"],
-[style*="background: white"],
-[style*="background: #f9f9f9"],
-[style*="background-color: #fff"],
-[style*="background-color: white"] {
-  background: var(--bg-surface) !important;
-}
-
-/* Fix legend colors on dark */
-.legend-gray {
-  color: var(--text-muted) !important;
-}
-
-.legend-red {
-  color: var(--danger) !important;
-}
-
-/* Make sure wrapper is transparent */
-#wrap {
-  background: var(--bg-base) !important;
-  height: 100%;
-}
-
-/* Body needs padding at bottom for fixed footer */
-#body {
-  padding-bottom: 70px !important;
-}
-
-
-/* Sidebar truncation fix */
-.menu-top {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  max-width: 100% !important;
-}
-
-.menu-top > span:not(.module-icon) {
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-.menu-top .module-icon {
-  flex-shrink: 0 !important;
-}
-
-/* Ensure submenu items don't overflow */
-.wp-submenu a {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 220px;
-}
-
-
-/* Sidebar label truncation */
-.menu-top-label {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
-    vertical-align: middle;
-}
-
-
-/* ==========================================================================
-   PHASE 2: Sidebar — 44px rows, animated accent bar
-   ========================================================================== */
-
-#menu {
-  width: 240px;
-  min-height: 100vh;
-  background: rgba(13, 16, 23, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-right: 1px solid #1E2433;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  transition: transform 200ms ease, width 200ms ease;
-  overflow: hidden;
-}
-
-.menu-module {
-  position: relative;
-  margin: 2px 8px;
-}
-
-.menu-module > a.menu-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 44px;
-  padding: 0 12px;
-  border-radius: 8px;
-  color: #8B93A7;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background 150ms ease;
-  border: 1px solid transparent;
-  position: relative;
-  text-decoration: none;
-}
-
-.menu-module > a.menu-top:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: #E8EAED;
-}
-
-/* Active item: animated accent bar */
-.menu-module.active > a.menu-top {
-  background: rgba(0, 217, 255, 0.08);
-  border-color: rgba(0, 217, 255, 0.25);
-  color: #E8EAED;
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.08);
-}
-
-.menu-module.active > a.menu-top::before {
-  content: '';
-  position: absolute;
-  left: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 20px;
-  background: #00D9FF;
-  border-radius: 0 3px 3px 0;
-  box-shadow: 0 0 8px rgba(0, 217, 255, 0.35);
-}
-
-/* Label truncation */
-.menu-top-label {
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
-  vertical-align: middle;
-}
-
-/* Module icon */
-.menu-top .module-icon {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.menu-top .module-icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* Module category colors */
 .menu-module.active.Students > a.menu-top::before { background: #7C5CFF; box-shadow: 0 0 8px rgba(124, 92, 255, 0.4); }
 .menu-module.active.Users > a.menu-top::before { background: #22D3A8; box-shadow: 0 0 8px rgba(34, 211, 168, 0.4); }
 .menu-module.active.Scheduling > a.menu-top::before { background: #FFB020; box-shadow: 0 0 8px rgba(255, 176, 32, 0.4); }
@@ -1505,12 +1069,13 @@ div.updated {
 .menu-module.active.Attendance > a.menu-top::before { background: #4EA8DE; box-shadow: 0 0 8px rgba(78, 168, 222, 0.4); }
 .menu-module.active.School_Setup > a.menu-top::before { background: #A855F7; box-shadow: 0 0 8px rgba(168, 85, 247, 0.4); }
 
-/* Responsive collapse */
+/* ==========================================================================
+   RESPONSIVE — Tablet collapses sidebar to icon-only rail, mobile hides
+   ========================================================================== */
 @media only screen and (max-width: 1023px) {
   #menu {
     width: 64px;
   }
-
   #menu .logo,
   #menu-top .today-date,
   #menu-top .username,
@@ -1519,21 +1084,15 @@ div.updated {
   .menu-top-label,
   .menu-inter,
   .wp-submenu {
-    display: none !important;
+    display: none;
   }
-
   .menu-module > a.menu-top {
     justify-content: center;
     padding: 0;
   }
-
-  #body {
-    margin-left: 64px;
-  }
-
-  #footer {
-    left: 64px;
-  }
+  #body { margin-left: 64px; }
+  #footer { left: 64px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media only screen and (max-width: 479px) {
@@ -1541,11 +1100,7 @@ div.updated {
     transform: translateX(-100%);
     width: 240px;
   }
-
-  #menu.slide {
-    transform: translateX(0);
-  }
-
+  #menu.slide { transform: translateX(0); }
   #menu .logo,
   #menu-top .today-date,
   #menu-top .username,
@@ -1553,236 +1108,9 @@ div.updated {
   .current-person a,
   .menu-top-label,
   .menu-inter,
-  .wp-submenu {
-    display: block !important;
-  }
-
-  #body {
-    margin-left: 0;
-  }
-
-  #footer {
-    left: 0;
-  }
-
-  .menu-module > a.menu-top {
-    justify-content: flex-start;
-    padding: 0 12px;
-  }
-}
-
-
-/* ==========================================================================
-   PHASE 3: Header + Greeting Card
-   ========================================================================== */
-
-/* Greeting bar (DrawHeader output) */
-.header {
-  width: 100%;
-  border-spacing: 0;
-  margin-bottom: 24px;
-  background: transparent !important;
-}
-
-.header1, .header2 {
-  background: #131722 !important;
-  border: 1px solid #1E2433 !important;
-  border-radius: 12px !important;
-  padding: 20px !important;
-  color: #E8EAED !important;
-  vertical-align: top;
-}
-
-.header1 h2 {
-  font-family: 'Space Grotesk', sans-serif !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  color: #E8EAED !important;
-  text-shadow: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  letter-spacing: -0.3px;
-}
-
-.header2 {
-  font-size: 14px !important;
-  line-height: 1.6 !important;
-  color: #E8EAED !important;
-  margin-top: 16px !important;
-}
-
-.header2 a {
-  color: #00D9FF !important;
-}
-
-.header2 b {
-  color: #E8EAED !important;
-  font-weight: 600;
-}
-
-/* Salute text */
-#salute {
-  font-family: 'Space Grotesk', sans-serif !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  color: #E8EAED !important;
-}
-
-/* Error messages in greeting area */
-.header2 div.error,
-.header2 .error {
-  background: rgba(239, 68, 68, 0.1) !important;
-  border: 1px solid rgba(239, 68, 68, 0.3) !important;
-  color: #FCA5A5 !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-}
-
-
-/* ==========================================================================
-   PHASE 4: Dashboard KPI Cards — elevated, count-up, hover lift
-   ========================================================================== */
-
-.kpi-grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
-  gap: 24px !important;
-  margin-bottom: 24px !important;
-}
-
-.kpi-card {
-  background: #131722 !important;
-  border: 1px solid #1E2433 !important;
-  border-radius: 16px !important;
-  padding: 20px !important;
-  position: relative !important;
-  overflow: hidden !important;
-  transition: transform 200ms ease, box-shadow 200ms ease !important;
-  cursor: default !important;
-}
-
-.kpi-card:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 217, 255, 0.08) !important;
-}
-
-.kpi-card-header {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-start !important;
-  margin-bottom: 16px !important;
-}
-
-.kpi-card-icon {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid #1E2433 !important;
-}
-
-.kpi-card-icon svg {
-  width: 20px !important;
-  height: 20px !important;
-}
-
-.sparkline-container {
-  width: 80px !important;
-  height: 32px !important;
-}
-
-.sparkline-container svg {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.kpi-value {
-  font-family: 'Space Grotesk', sans-serif !important;
-  font-size: 32px !important;
-  font-weight: 600 !important;
-  color: #E8EAED !important;
-  line-height: 1 !important;
-  margin-bottom: 4px !important;
-}
-
-.kpi-label {
-  font-size: 12px !important;
-  color: #8B93A7 !important;
-  font-weight: 500 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
-}
-
-.kpi-change {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  margin-top: 8px !important;
-  padding: 2px 8px !important;
-  border-radius: 20px !important;
-}
-
-.kpi-change.positive {
-  color: #22D3A8 !important;
-  background: rgba(34, 211, 168, 0.1) !important;
-}
-
-.kpi-change.negative {
-  color: #FF6B6B !important;
-  background: rgba(255, 107, 107, 0.1) !important;
-}
-
-.kpi-change.neutral {
-  color: #8B93A7 !important;
-  background: rgba(139, 147, 167, 0.1) !important;
-}
-
-/* Module accent colors on cards */
-.kpi-card.accent-violet .kpi-card-icon { background: rgba(124, 92, 255, 0.1) !important; border-color: rgba(124, 92, 255, 0.2) !important; }
-.kpi-card.accent-violet .kpi-card-icon svg { stroke: #7C5CFF !important; }
-.kpi-card.accent-cyan .kpi-card-icon { background: rgba(0, 217, 255, 0.1) !important; border-color: rgba(0, 217, 255, 0.2) !important; }
-.kpi-card.accent-cyan .kpi-card-icon svg { stroke: #00D9FF !important; }
-.kpi-card.accent-green .kpi-card-icon { background: rgba(34, 211, 168, 0.1) !important; border-color: rgba(34, 211, 168, 0.2) !important; }
-.kpi-card.accent-green .kpi-card-icon svg { stroke: #22D3A8 !important; }
-.kpi-card.accent-amber .kpi-card-icon { background: rgba(255, 176, 32, 0.1) !important; border-color: rgba(255, 176, 32, 0.2) !important; }
-.kpi-card.accent-amber .kpi-card-icon svg { stroke: #FFB020 !important; }
-.kpi-card.accent-teal .kpi-card-icon { background: rgba(78, 168, 222, 0.1) !important; border-color: rgba(78, 168, 222, 0.2) !important; }
-.kpi-card.accent-teal .kpi-card-icon svg { stroke: #4EA8DE !important; }
-
-
-/* KPI card inner content (legacy dashboard module data) */
-.kpi-card-inner {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #8B93A7;
-}
-
-.kpi-card-inner table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.kpi-card-inner td {
-  padding: 4px 0;
-  border: none;
-  color: #8B93A7;
-}
-
-.kpi-card-inner td:last-child {
-  text-align: right;
-  color: #E8EAED;
-  font-weight: 500;
-}
-
-.kpi-card-inner .legend-gray {
-  color: #8B93A7 !important;
-}
-
-.kpi-card-inner h3 {
-  display: none;
+  .wp-submenu { display: block; }
+  #body { margin-left: 0; }
+  #footer { left: 0; }
+  .menu-module > a.menu-top { justify-content: flex-start; padding: 0 12px; }
+  .kpi-grid { grid-template-columns: 1fr; }
 }

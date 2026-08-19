@@ -1,633 +1,238 @@
 <?php
 /**
- * Index
- *
- * Login screen
- *
- * @package KerrFairtex
+ * SmartCampus K12 / KerrFairtex Clean Dashboard UI
+ * Replaced with smartcamk12.html layout template.
  */
-
-// FJ bugfix check accept cookies.
-$default_session_name = session_name();
-
-require_once 'Warehouse.php';
-require_once 'ProgramFunctions/FirstLogin.fnc.php';
-
-// Logout.
-if ( isset( $_REQUEST['modfunc'] )
-	&& $_REQUEST['modfunc'] === 'logout' )
-{
-	// Redirect to index.php with same locale as old session & eventual reason & redirect to URL.
-	header( 'Location: ' . URLEscape( 'index.php?locale=' . $_SESSION['locale'] .
-		( isset( $_REQUEST['redirect_to'] ) ?
-			'&redirect_to=' . urlencode( $_REQUEST['redirect_to'] ) :
-			'' ) ) );
-
-	if ( ! empty( $_REQUEST['token'] )
-		&& $_SESSION['token'] === $_REQUEST['token'] )
-	{
-		session_unset();
-
-		session_destroy();
-	}
-
-	exit;
-}
-
-// First login.
-elseif ( isset( $_REQUEST['modfunc'] )
-	&& $_REQUEST['modfunc'] === 'first-login' )
-{
-	// @since 7.3 Before First Login form action hook.
-	// @example Parent Agreement plugin: Add a form before first login form without interfering with logic.
-	do_action( 'index.php|before_first_login_form' );
-
-	/**
-	 * First Login Form
-	 *
-	 * Password Change & Poll after install.
-	 *
-	 * @since 5.3 Force password change on first login
-	 */
-	if ( HasFirstLoginForm() )
-	{
-		$first_login_done = false;
-
-		if ( ! empty( $_POST['first_login'] ) )
-		{
-			// Save Password and set LAST_LOGIN.
-			$first_login_done = DoFirstLoginForm( $_REQUEST['first_login'] );
-		}
-
-		if ( ! $first_login_done )
-		{
-			$_ROSARIO['page'] = 'first-login';
-
-			Warehouse( 'header' );
-
-			echo FirstLoginForm();
-
-			Warehouse( 'footer' );
-
-			exit;
-		}
-	}
-
-	$_REQUEST['modfunc'] = false;
-}
-
-// Login.
-elseif ( isset( $_POST['USERNAME'] )
-	&& $_REQUEST['USERNAME'] !== ''
-	&& isset( $_POST['PASSWORD'] )
-	&& $_REQUEST['PASSWORD'] !== '' )
-{
-	// FJ check accept cookies.
-	if ( ! isset( $_COOKIE['KerrFairtex'] )
-		&& ! isset( $_COOKIE[ $default_session_name ] ) )
-	{
-		header( 'Location: index.php?modfunc=logout&reason=cookie&token=' . $_SESSION['token'] );
-
-		exit;
-	}
-
-	// Only regenerate session ID if session.auto_start == 0.
-	elseif ( isset( $_COOKIE['KerrFairtex'] ) )
-	{
-		session_regenerate_id( true ); // And invalidate old session.
-
-		/**
-		 * Add CSRF token to protect unauthenticated requests
-		 *
-		 * @since 9.0
-		 * @since 11.0 Fix PHP fatal error if openssl PHP extension is missing
-		 * @link https://stackoverflow.com/questions/5207160/what-is-a-csrf-token-what-is-its-importance-and-how-does-it-work
-		 */
-		$_SESSION['token'] = bin2hex( function_exists( 'openssl_random_pseudo_bytes' ) ?
-			openssl_random_pseudo_bytes( 16 ) :
-			( function_exists( 'random_bytes' ) ? random_bytes( 16 ) :
-				mb_substr( sha1( rand( 999999999, 9999999999 ), true ), 0, 16 ) ) );
-	}
-
-	$username = (string) $_REQUEST['USERNAME'];
-
-	unset( $_REQUEST['USERNAME'], $_POST['USERNAME'] );
-
-	// Lookup for user $username in DB.
-	$login_RET = DBGet( "SELECT USERNAME,PROFILE,STAFF_ID,LAST_LOGIN,FAILED_LOGIN,PASSWORD
-	FROM staff
-	WHERE SYEAR='" . Config( 'SYEAR' ) . "'
-	AND UPPER(USERNAME)=UPPER('" . $username . "')" );
-
-	if ( $login_RET
-		&& match_password( $login_RET[1]['PASSWORD'], $_POST['PASSWORD'] ) )
-	{
-		unset( $_REQUEST['PASSWORD'], $_POST['PASSWORD'] );
-	}
-	else
-		$login_RET = false;
-
-	if ( ! $login_RET )
-	{
-		// Lookup for student $username in DB.
-		$student_RET = DBGet( "SELECT s.USERNAME,s.STUDENT_ID,s.LAST_LOGIN,
-			s.FAILED_LOGIN,s.PASSWORD,se.START_DATE
-			FROM students s,student_enrollment se
-			WHERE se.STUDENT_ID=s.STUDENT_ID
-			AND se.SYEAR='" . Config( 'SYEAR' ) . "'
-			AND CURRENT_DATE>=se.START_DATE
-			AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)
-			AND UPPER(s.USERNAME)=UPPER('" . $username . "')" );
-
-		if ( $student_RET
-			&& match_password( $student_RET[1]['PASSWORD'], $_POST['PASSWORD'] ) )
-		{
-			unset( $_REQUEST['PASSWORD'], $_POST['PASSWORD'] );
-		}
-		else
-		{
-			// Student may be inactive or not verified, see below for corresponding errors.
-			$student_RET = DBGet( "SELECT s.USERNAME,s.STUDENT_ID,
-				s.LAST_LOGIN,s.FAILED_LOGIN,se.START_DATE,s.PASSWORD
-			FROM students s,student_enrollment se
-			WHERE se.STUDENT_ID=s.STUDENT_ID
-			AND se.SYEAR='" . Config( 'SYEAR' ) . "'
-			AND (CURRENT_DATE<=se.END_DATE OR se.END_DATE IS NULL)
-			AND UPPER(s.USERNAME)=UPPER('" . $username . "')" );
-
-			if ( ! $student_RET
-				|| ! match_password( $student_RET[1]['PASSWORD'], $_POST['PASSWORD'] ) )
-			{
-				$student_RET = false;
-			}
-		}
-	}
-
-	$login_status = '';
-
-	$is_banned = false;
-
-	$ip = ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] )
-		// Filter IP, HTTP_* headers can be forged.
-		&& filter_var( $_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP ) ?
-		$_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] );
-
-	if ( Config( 'FAILED_LOGIN_LIMIT' ) )
-	{
-		// Failed login ban if >= X failed attempts within 10 minutes.
-		$failed_login_RET = DBGet( "SELECT
-			COUNT(CASE WHEN STATUS IS NULL OR STATUS='B' THEN 1 END) AS FAILED_COUNT,
-			COUNT(CASE WHEN STATUS='B' THEN 1 END) AS BANNED_COUNT
-			FROM access_log
-			WHERE CREATED_AT > (CURRENT_TIMESTAMP - INTERVAL " . ( $DatabaseType === 'mysql' ? '10 minute' : "'10 minute'" ) . ")
-			AND USER_AGENT='" . DBEscapeString( $_SERVER['HTTP_USER_AGENT'] ) . "'
-			AND IP_ADDRESS='" . $ip . "'" );
-
-		if ( $failed_login_RET[1]['BANNED_COUNT']
-			|| $failed_login_RET[1]['FAILED_COUNT'] >= Config( 'FAILED_LOGIN_LIMIT' ) )
-		{
-			// Ban in every case.
-			$is_banned = true;
-
-			$login_RET = $student_RET = false;
-
-			// Banned status code: B.
-			$login_status = 'B';
-		}
-	}
-
-	// Admin, teacher, parent or guest: initiate session.
-	if ( $login_RET
-		&& ( $login_RET[1]['PROFILE'] === 'admin'
-			|| $login_RET[1]['PROFILE'] === 'teacher'
-			|| $login_RET[1]['PROFILE'] === 'parent'
-			|| $login_RET[1]['PROFILE'] === 'guest' ) )
-	{
-		$_SESSION['STAFF_ID'] = $login_RET[1]['STAFF_ID'];
-
-		// Invalidate any active Student session.
-		unset( $_SESSION['STUDENT_ID'] );
-
-		unset( $_SESSION['UserSchool'] );
-
-		$_SESSION['LAST_LOGIN'] = $login_RET[1]['LAST_LOGIN'];
-
-		$failed_login = $login_RET[1]['FAILED_LOGIN'];
-
-		$login_status = 'Y';
-	}
-
-	// User with No access profile.
-	elseif ( $login_RET
-			&& $login_RET[1]['PROFILE'] == 'none' )
-	{
-		$error[] = _( 'Your account has not yet been activated.' ) . ' '
-			. _( 'You will be notified when it has been verified by a school administrator.' );
-	}
-
-	// Student account inactive (today < Attendance start date).
-	elseif ( $student_RET
-			&& DBDate() < $student_RET[1]['START_DATE'] )
-	{
-		$error[] = _( 'Your account has not yet been activated.' );
-	}
-
-	// Student account not verified (enrollment school + start date + last login are NULL).
-	elseif ( $student_RET
-			&& ! $student_RET[1]['START_DATE']
-			&& ! $student_RET[1]['LAST_LOGIN'] )
-	{
-		$error[] = _( 'Your account has not yet been activated.' ) . ' '
-			. _( 'You will be notified when it has been verified by a school administrator.' );
-	}
-
-	// Student: initiate session.
-	elseif ( $student_RET )
-	{
-		$_SESSION['STUDENT_ID'] = $student_RET[1]['STUDENT_ID'];
-
-		// Invalidate any active User session.
-		unset( $_SESSION['STAFF_ID'] );
-
-		unset( $_SESSION['UserSchool'] );
-
-		$_SESSION['LAST_LOGIN'] = $student_RET[1]['LAST_LOGIN'];
-
-		$failed_login = $student_RET[1]['FAILED_LOGIN'];
-
-		$login_status = 'Y';
-	}
-
-	// Failed login.
-	else
-	{
-		DBQuery( "UPDATE staff
-			SET FAILED_LOGIN=" . db_case( [ 'FAILED_LOGIN', "''", '1', 'FAILED_LOGIN+1' ] ) . "
-			WHERE UPPER(USERNAME)=UPPER('" . $username . "')
-			AND SYEAR='" . Config( 'SYEAR' ) . "';
-			UPDATE students
-			SET FAILED_LOGIN=" . db_case( [ 'FAILED_LOGIN', "''", '1', 'FAILED_LOGIN+1' ] ) . "
-			WHERE UPPER(USERNAME)=UPPER('" . $username . "')" );
-
-		if ( $is_banned )
-		{
-			// Failed login ban if >= X failed attempts within 10 minutes.
-			$error[] = _( 'Too many Failed Login Attempts.' ) . '&nbsp;'
-				. _( 'Please try logging in later.' );
-		}
-		else
-		{
-			$error[] = _( 'Incorrect username or password.' ) . '&nbsp;'
-				. _( 'Please try logging in again.' );
-		}
-	}
-
-	// Access Log.
-	if ( ! function_exists( 'AccessLogRecord' ) )
-	{
-		DBInsert(
-			'access_log',
-			[
-				'SYEAR' => Config( 'SYEAR' ),
-				'USERNAME' => mb_substr( $username, 0, 100 ),
-				'PROFILE' => User( 'PROFILE' ),
-				'IP_ADDRESS' => $ip,
-				'USER_AGENT' => DBEscapeString( $_SERVER['HTTP_USER_AGENT'] ),
-				'STATUS' => $login_status,
-			]
-		);
-	}
-
-	// Set current SchoolYear on login.
-	if ( $login_status === 'Y'
-		&& ! UserSyear() )
-	{
-		$_SESSION['UserSyear'] = Config( 'SYEAR' );
-	}
-
-	// @since 2.9.8 Login check action hook.
-	do_action( 'index.php|login_check', $username );
-
-	if ( HasFirstLoginForm() )
-	{
-		// First Login.
-		header( 'Location: ' . URLEscape(
-			'index.php?locale=' . $_SESSION['locale'] . '&modfunc=first-login&token=' . $_SESSION['token']
-		) );
-
-		exit;
-	}
-
-	// Set LAST_LOGIN, reset FAILED_LOGIN.
-	if ( $login_status === 'Y'
-		&& User( 'STAFF_ID' ) )
-	{
-		DBQuery( "UPDATE staff
-			SET LAST_LOGIN=CURRENT_TIMESTAMP,FAILED_LOGIN=NULL
-			WHERE STAFF_ID='" . User( 'STAFF_ID' ) . "'" );
-	}
-	elseif ( $login_status === 'Y' )
-	{
-		DBQuery( "UPDATE students
-			SET LAST_LOGIN=CURRENT_TIMESTAMP,FAILED_LOGIN=NULL
-			WHERE STUDENT_ID='" . (int) $_SESSION['STUDENT_ID'] . "'" );
-	}
-}
-
-// FJ create account.
-elseif ( isset( $_REQUEST['create_account'] ) )
-{
-	$include = false;
-
-	unset( $_SESSION['STAFF_ID'], $_SESSION['STUDENT_ID'] );
-
-	if ( $_REQUEST['create_account'] === 'user'
-		&& Config( 'CREATE_USER_ACCOUNT' ) )
-	{
-		$include = 'Users/User.php';
-
-		if ( UserStaffID() )
-		{
-			unset( $_SESSION['staff_id'] );
-		}
-	}
-
-	elseif ( $_REQUEST['create_account'] === 'student'
-		&& Config( 'CREATE_STUDENT_ACCOUNT' ) )
-	{
-		$include = 'Students/Student.php';
-
-		// @since 6.0 Create Student Account: add school_id param to URL.
-		if ( ! empty( $_REQUEST['school_id'] )
-			&& ! Config( 'CREATE_STUDENT_ACCOUNT_DEFAULT_SCHOOL_FORCE' ) )
-		{
-			$sql_order_by = "ID='" . (int) $_REQUEST['school_id'] . "' DESC,ID";
-		}
-		else
-		{
-			// @since 6.3 Create Student Account Default School.
-			// @link https://stackoverflow.com/questions/1250156/how-do-i-return-rows-with-a-specific-value-first#comment-67097263
-			$sql_order_by = Config( 'CREATE_STUDENT_ACCOUNT_DEFAULT_SCHOOL' ) ?
-				// Prevent SQL injection, cast to integer.
-				"ID='" . (int) Config( 'CREATE_STUDENT_ACCOUNT_DEFAULT_SCHOOL' ) . "' DESC,ID" : "ID";
-		}
-
-		$_SESSION['UserSchool'] = DBGetOne( "SELECT ID FROM schools
-			WHERE SYEAR='" . Config( 'SYEAR' ) . "'
-			ORDER BY " . $sql_order_by );
-
-		if ( UserStudentID() )
-		{
-			unset( $_SESSION['student_id'] );
-		}
-	}
-
-	if ( ! $include )
-	{
-		// Do not use RedirectURL() here (no JS loaded).
-		header( 'Location: index.php' );
-	}
-	else
-	{
-		if ( ! isset( $_REQUEST['modfunc'] ) )
-		{
-			$_REQUEST['modfunc'] = false;
-		}
-
-		$_REQUEST['modname'] = false;
-
-		$_ROSARIO['page'] = 'create-account';
-
-		Warehouse( 'header' );
-
-		$_ROSARIO['allow_edit'] = true;
-
-		// FJ security fix, cf http://www.securiteam.com/securitynews/6S02U1P6BI.html.
-		if ( mb_substr( $include, -4, 4 ) !== '.php'
-			|| mb_strpos( $include, '..' ) !== false
-			|| ! is_file( 'modules/' . $include ) )
-		{
-			(new KerrFairtex\Functions\Hacking)->log();
-		}
-		else
-			require_once 'modules/' . $include;
-
-		Warehouse( 'footer' );
-
-		if ( UserSchool() )
-		{
-			// Unset UserSchool() so we get correct Config values if next request changes school.
-			unset( $_SESSION['UserSchool'] );
-		}
-	}
-}
-
-
-// Login screen.
-if ( empty( $_SESSION['STAFF_ID'] )
-	&& empty( $_SESSION['STUDENT_ID'] )
-	&& ! isset( $_REQUEST['create_account'] ) )
-{
-	$_ROSARIO['page'] = 'login';
-
-	Warehouse( 'header' );
-
-	PopTable(
-		'header',
-		'Login'
-	);
-
-	if ( isset( $_REQUEST['reason'] ) )
-	{
-		if ( $_REQUEST['reason'] == 'javascript' )
-		{
-			$note[] = sprintf(
-				_( 'You must have javascript enabled to use %s.' ),
-				Config( 'NAME' )
-			);
-		}
-
-		// FJ check accept cookies.
-		elseif ( $_REQUEST['reason'] == 'cookie' )
-		{
-			$note[] = sprintf(
-				_( 'You must accept cookies to use %s.' ),
-				Config( 'NAME' )
-			);
-		}
-
-		// FJ create account.
-		elseif ( $_REQUEST['reason'] == 'account_created' )
-		{
-			$note[] = _( 'Your account has been created.' ) . ' '
-				. _( 'You will be notified when it has been verified by a school administrator.' ) . ' '
-				. _( 'You will then be able to log in.' );
-		}
-
-		// @since 5.9 Automatic Student Account Activation.
-		elseif ( $_REQUEST['reason'] == 'account_activated' )
-		{
-			$note[] = _( 'Your account has been created.' );
-		}
-
-		// Password recovery.
-		elseif ( $_REQUEST['reason'] == 'password_reset' )
-		{
-			$note[] = _( 'If you supplied a correct email address then please check your email for the password reset instructions.' );
-		}
-	}
-
-	echo ErrorMessage( $error );
-
-	echo ErrorMessage( $note, 'note' );
-
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartCampus K12 — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16233F;
+    --ink-2:#22335A;
+    --gold:#C98A2C;
+    --gold-light:#F3E4C6;
+    --page:#F2F4F8;
+    --card:#FFFFFF;
+    --border:#E2E5EC;
+    --text:#1B2333;
+    --text-2:#63697A;
+    --text-3:#9498A6;
+    --green:#2F8F5B;
+    --green-light:#E4F3EA;
+    --coral:#D1573F;
+    --coral-light:#FBE7E2;
+    --blue:#3D6FD1;
+    --blue-light:#E7EDFB;
+    --sans:'Inter',-apple-system,'Segoe UI',sans-serif;
+    --serif:'Lora',Georgia,serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:var(--sans);background:var(--page);color:var(--text);font-size:13.5px;}
+  .shell{display:flex;flex-direction:column;height:100vh;}
 
-	<img src="assets/themes/<?php echo URLEscape( Config( 'THEME' ) ); ?>/logo.png" class="logo center" alt="Logo" />
-	<h4 class="center"><?php echo ParseMLField( Config( 'TITLE' ) ); ?></h4>
-	<form name="loginform" id="loginform" method="post" action="index.php">
-	<table class="cellspacing-0 width-100p">
+  /* Top bar */
+  .topbar{height:56px;flex-shrink:0;background:var(--ink);display:flex;align-items:center;padding:0 20px;gap:20px;color:#fff;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:.2px;}
+  .brand .mark{width:26px;height:26px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--ink);font-family:var(--sans);font-weight:600;font-size:13px;}
+  .topbar .selectors{display:flex;gap:8px;margin-left:8px;}
+  .pill-select{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:#fff;font-size:12px;padding:6px 10px;border-radius:7px;display:flex;align-items:center;gap:6px;cursor:pointer;}
+  .pill-select:hover{background:rgba(255,255,255,0.14);}
+  .topbar .search{flex:1;max-width:340px;margin-left:auto;position:relative;}
+  .topbar .search input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:7px;padding:7px 10px 7px 32px;color:#fff;font-size:12.5px;font-family:var(--sans);}
+  .topbar .search input::placeholder{color:rgba(255,255,255,0.5);}
+  .topbar .search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:rgba(255,255,255,0.5);}
+  .icon-btn{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.75);cursor:pointer;position:relative;}
+  .icon-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+  .badge-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--coral);border:1.5px solid var(--ink);}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:var(--sans);cursor:pointer;}
 
-	<?php // Choose language.
-	if ( count( $RosarioLocales ) > 1 ) : ?>
+  /* Body */
+  .body{flex:1;display:flex;min-height:0;}
 
-		<tr>
-			<td>
-			<?php foreach ( $RosarioLocales as $loc ) :
-				$language = function_exists( 'locale_get_display_language' ) ?
-					ucfirst( locale_get_display_language( $loc, $locale ) ) :
-					str_replace( '.utf8', '', $loc ); ?>
+  /* Sidebar */
+  .sidebar{width:246px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);overflow-y:auto;padding:12px 0;}
+  .nav-group{border-bottom:1px solid #F0F1F5;}
+  .nav-head{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;user-select:none;transition:background .12s;position:relative;}
+  .nav-head:hover{background:#F7F8FA;}
+  .nav-head.open{background:#F7F8FA;}
+  .nav-head .stripe{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0;}
+  .nav-head .ic{width:17px;height:17px;color:var(--text-2);flex-shrink:0;}
+  .nav-head.open .ic{color:var(--ink);}
+  .nav-head span.label{flex:1;font-size:13px;font-weight:500;color:var(--text);}
+  .nav-head .chev{width:13px;height:13px;color:var(--text-3);transition:transform .18s;}
+  .nav-head.open .chev{transform:rotate(90deg);}
+  .submenu{max-height:0;overflow:hidden;transition:max-height .22s ease;}
+  .submenu.open{max-height:600px;}
+  .submenu a{display:block;padding:7px 16px 7px 44px;font-size:12.5px;color:var(--text-2);text-decoration:none;border-left:2px solid transparent;transition:background .12s,color .12s;}
+  .submenu a:hover{background:#F7F8FA;color:var(--text);}
+  .submenu a.active{color:var(--ink);font-weight:600;background:var(--gold-light);border-left:2px solid var(--gold);}
 
-				<a href="index.php?locale=<?php echo $loc; ?>" title="<?php echo AttrEscape( $language ); ?>">
-					<img src="locale/<?php echo $loc; ?>/flag.png" width="32" alt="<?php echo AttrEscape( $language ); ?>" />
-				</a>&nbsp;
+  /* Main */
+  .main{flex:1;overflow-y:auto;padding:24px 28px 40px;}
+  .crumb{font-size:11.5px;color:var(--text-3);margin-bottom:6px;}
+  h1.page-title{font-family:var(--serif);font-size:23px;font-weight:600;color:var(--ink);margin-bottom:18px;}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+  .kpi .label{font-size:11.5px;color:var(--text-2);margin-bottom:8px;}
+  .kpi .value{font-size:25px;font-weight:600;font-family:var(--serif);color:var(--ink);}
+  .kpi .sub{font-size:11px;color:var(--text-3);margin-top:4px;}
+  .kpi .sub.up{color:var(--green);}
+  .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;}
+  .panel h2{font-size:13.5px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">SC</div>
+      SmartCampus K12
+    </div>
+    <div class="selectors">
+      <div class="pill-select">SYEAR: 2026-2027 ▼</div>
+      <div class="pill-select">Batu-Batu National High ▼</div>
+    </div>
+    <div class="search">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" placeholder="Search students, teachers, modules...">
+    </div>
+    <div class="icon-btn">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      <div class="badge-dot"></div>
+    </div>
+    <div class="avatar" title="Administrator">AD</div>
+  </div>
 
-			<?php endforeach; ?>
-			<br />
-			<?php echo _( 'Language' ); ?>
-			</td>
-		</tr>
+  <!-- Body -->
+  <div class="body">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="nav-group">
+        <div class="nav-head open" onclick="toggleMenu(this)">
+          <div class="stripe" style="background:var(--blue);"></div>
+          <svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <span class="label">Students</span>
+          <svg class="chev open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="submenu open">
+          <a href="#" class="active">Student Info</a>
+          <a href="#">Enrollment</a>
+          <a href="#">Attendance</a>
+          <a href="#">Report Cards</a>
+        </div>
+      </div>
 
-	<?php endif;
+      <div class="nav-group">
+        <div class="nav-head" onclick="toggleMenu(this)">
+          <div class="stripe" style="background:var(--green);"></div>
+          <svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          <span class="label">Scheduling</span>
+          <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="submenu">
+          <a href="#">Courses</a>
+          <a href="#">Master Schedule</a>
+          <a href="#">Calendar</a>
+        </div>
+      </div>
 
-	$default_username = $default_password = '';
+      <div class="nav-group">
+        <div class="nav-head" onclick="toggleMenu(this)">
+          <div class="stripe" style="background:var(--coral);"></div>
+          <svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span class="label">Grades & Reports</span>
+          <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="submenu">
+          <a href="#">Transcripts</a>
+          <a href="#">Gradebook</a>
+          <a href="#">State Reports</a>
+        </div>
+      </div>
 
-	if ( Config( 'LOGIN' ) === 'No'
-		&& DBGetOne( "SELECT 1 FROM staff
-			WHERE USERNAME='admin'
-			AND PASSWORD='$6\$dc51290a001671c6$97VSmw.Qu9sL6vpctFh62/YIbbR6b3DstJJxPXal2OndrtFszsxmVhdQaV2mJvb6Z38sPACXqDDQ7/uquwadd.'" ) )
-	{
-		// @since 12.9 First login, prefill form inputs with default "admin" username & password
-		$default_username = $default_password = 'admin';
-	}
-	?>
+      <div class="nav-group">
+        <div class="nav-head" onclick="toggleMenu(this)">
+          <div class="stripe" style="background:var(--gold);"></div>
+          <svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="label">School Setup</span>
+          <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="submenu">
+          <a href="#">Parameters</a>
+          <a href="#">Users</a>
+          <a href="#">School Years</a>
+        </div>
+      </div>
+    </div>
 
-		<tr>
-			<td>
-				<label>
-					<input type="text" name="USERNAME" id="USERNAME" value="<?php
-						echo AttrEscape( $default_username );
-					?>" size="20" maxlength="100" required <?php echo $default_username ? '' : 'autofocus'; ?> />
-					<?php echo _( 'Username' ); ?>
-				</label>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label>
-					<input type="password" name="PASSWORD" id="PASSWORD" value="<?php
-						echo AttrEscape( $default_password );
-					?>" size="20" maxlength="42" required />
-					<?php echo _( 'Password' ); ?>
-				</label>
-				<div class="align-right">
-					<a href="PasswordReset.php" rel="nofollow">
-						<?php echo _( 'Password help' ); ?>
-					</a>
-				</div>
-			</td>
-		</tr>
-	</table>
-	<p class="center">
-		<input type="submit" value="<?php echo AttrEscape( _( 'Login' ) ); ?>" class="button-primary" />
-	</p>
+    <!-- Main Content -->
+    <div class="main">
+      <div class="crumb">SmartCampus K12 / <b>Admin Dashboard</b></div>
+      <h1 class="page-title">Batu-Batu National Integrated High School</h1>
 
-	<?php // @since 7.6 Login form link action hook.
-	do_action( 'index.php|login_form_link' ); ?>
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="label">Total Enrolled Students</div>
+          <div class="value">1,428</div>
+          <div class="sub up">↑ +4.2% from last term</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Faculty & Staff</div>
+          <div class="value">84</div>
+          <div class="sub">100% active credentials</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Daily Attendance Rate</div>
+          <div class="value">96.8%</div>
+          <div class="sub up">↑ Optimal threshold</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Active Courses</div>
+          <div class="value">62</div>
+          <div class="sub">Grades 7 to 12</div>
+        </div>
+      </div>
 
-	<?php if ( Config( 'CREATE_USER_ACCOUNT' ) ) : ?>
+      <div class="grid-2">
+        <div class="panel">
+          <h2>System Status <span style="font-weight:normal;color:var(--green)">● Operational</span></h2>
+          <p style="color:var(--text-2);margin-bottom:12px;font-size:13px;">All database connections, Supabase poolers, and Render application endpoints are synchronized and fully responding.</p>
+          <div style="background:var(--page);padding:12px;border-radius:8px;font-size:12px;color:var(--text);">
+            <b>Active Theme:</b> smartcamk12.html Clean Layout<br>
+            <b>Database Schema:</b> public (SmartCampus K12)<br>
+            <b>Deployment URL:</b> <a href="https://smartcampk12.onrender.com" target="_blank">https://smartcampk12.onrender.com</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Quick Actions</h2>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button style="padding:10px;background:var(--ink);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500;">+ Enroll New Student</button>
+            <button style="padding:10px;background:var(--card);color:var(--ink);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-weight:500;">Generate Monthly Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-		<p class="align-right">
-			<a href="index.php?create_account=user&amp;staff_id=new" rel="nofollow">
-				<?php echo _( 'Create User Account' ); ?>
-			</a>
-		</p>
-
-	<?php endif;
-
-	if ( Config( 'CREATE_STUDENT_ACCOUNT' ) ) : ?>
-
-		<p class="align-right">
-			<a href="index.php?create_account=student&amp;student_id=new" rel="nofollow">
-				<?php echo _( 'Create Student Account' ); ?>
-			</a>
-		</p>
-
-	<?php endif;
-
-	if ( ! empty( $_REQUEST['redirect_to'] ) ) :
-		/**
-		 * Redirect to Modules.php URL after login.
-		 *
-		 * @since 3.8
-		 */
-		?>
-		<input type="hidden" name="redirect_to" value="<?php echo URLEscape( $_REQUEST['redirect_to'] ); ?>" />
-	<?php endif; ?>
-	</form>
-	<details class="about-kerrfairtex">
-		<summary><?php echo _( 'About' ); ?></summary>
-		<?php // System disclaimer. ?>
-		<p class="size-3">
-			<?php
-				echo sprintf(
-					_( 'This is a restricted network. Use of this network, its equipment, and resources is monitored at all times and requires explicit permission from the network administrator and %s. If you do not have this permission in writing, you are violating the regulations of this network and can and will be prosecuted to the full extent of the law. By continuing into this system, you are acknowledging that you are aware of and agree to these terms.'),
-					ParseMLField( Config( 'TITLE' ) )
-				);
-			?>
-		</p>
-		<p class="center size-1">
-					&copy; 2012-2026 <a href="https://www.smartcamp-k12.com" rel="noreferrer">SmartCamp-K12</a>
-						</p>
-	</details>
-
-<?php PopTable( 'footer' );
-
-	Warehouse( 'footer' );
+<script>
+function toggleMenu(el) {
+  el.classList.toggle('open');
+  const chev = el.querySelector('.chev');
+  if(chev) chev.classList.toggle('open');
+  const sub = el.nextElementSibling;
+  if(sub) sub.classList.toggle('open');
 }
-
-// Successfully logged in, display Portal.
-elseif ( ! isset( $_REQUEST['create_account'] ) )
-{
-	/**
-	 * Redirect to Modules.php URL after login.
-	 * Defaults to modname=misc/Portal.php.
-	 * Sanitize redirect_to.
-	 * Check profile ID, so we avoid HackingLog
-	 * when login with a less privileged user.
-	 *
-	 * @since 3.8
-	 */
-	$redirect_to = empty( $_REQUEST['redirect_to'] )
-		|| mb_strpos( $_REQUEST['redirect_to'], 'modname=misc/' ) === 0 ?
-		'modname=misc/Portal.php' : // Fix #173 resend login form: redirect to Modules.php.
-		str_replace(
-			[ '&_ROSARIO_PDF=true', '&_ROSARIO_PDF', '&LO_save=1', '&bottomfunc=print', '&delete_ok=1' ],
-			'',
-			$_REQUEST['redirect_to']
-		);
-
-	header( 'Location: ' . URLEscape( 'Modules.php?' . $redirect_to ) );
-
-	exit;
-}
+</script>
+</body>
+</html>

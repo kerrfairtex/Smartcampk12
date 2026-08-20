@@ -2,12 +2,6 @@
 /**
  * Router / Modules wrapper for SmartCampus K12
  */
-session_name('SmartCampusSession');
-if ( session_status() === PHP_SESSION_NONE )
-{
-	session_start();
-}
-
 require_once 'Warehouse.php';
 
 $modname = isset($_REQUEST['modname']) ? $_REQUEST['modname'] : '';
@@ -22,6 +16,7 @@ $modname = str_replace(['../', '..\\'], '', $modname);
 $filepath = 'modules/' . $modname;
 
 if (file_exists($filepath)) {
+    $_ROSARIO['page'] = 'modules';
     Warehouse('header');
     include $filepath;
     Warehouse('footer');

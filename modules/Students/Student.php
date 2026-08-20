@@ -104,7 +104,8 @@ if ( User( 'PROFILE' ) !== 'admin' )
 	}
 }
 
-if ( $_REQUEST['modfunc'] === 'update'
+if ( isset( $_REQUEST['modfunc'] )
+	&& $_REQUEST['modfunc'] === 'update'
 	&& AllowEdit() )
 {
 	// Add eventual Dates to $_REQUEST['students'].
@@ -598,7 +599,8 @@ else
 	exit;
 }
 
-if ( $_REQUEST['modfunc'] === 'delete'
+if ( isset( $_REQUEST['modfunc'] )
+	&& $_REQUEST['modfunc'] === 'delete'
 	&& basename( $_SERVER['PHP_SELF'] ) !== 'index.php'
 	&& User( 'PROFILE' ) === 'admin'
 	&& AllowEdit() )
@@ -628,7 +630,8 @@ if ( $_REQUEST['modfunc'] === 'delete'
 	}
 }
 
-if ( $_REQUEST['modfunc'] === 'remove_file'
+if ( isset( $_REQUEST['modfunc'] )
+	&& $_REQUEST['modfunc'] === 'remove_file'
 	&& basename( $_SERVER['PHP_SELF'] ) !== 'index.php'
 	&& AllowEdit() )
 {
@@ -677,8 +680,9 @@ Search( 'student_id' );
 
 if (  ( UserStudentID()
 	|| isset( $_REQUEST['student_id'] ) && $_REQUEST['student_id'] === 'new' )
-	&& $_REQUEST['modfunc'] !== 'delete'
-	&& $_REQUEST['modfunc'] !== 'remove_file' )
+	&& ( ! isset( $_REQUEST['modfunc'] )
+		|| ( $_REQUEST['modfunc'] !== 'delete'
+			&& $_REQUEST['modfunc'] !== 'remove_file' ) ) )
 {
 	// MODNAME LIKE 'Students/Student.php%'.
 
@@ -715,7 +719,8 @@ if (  ( UserStudentID()
 		WHERE " . ( $_REQUEST['student_id'] !== 'new' ? 'TRUE' : "ID='1'" ) .
 		" ORDER BY SORT_ORDER IS NULL,SORT_ORDER,TITLE" );
 
-	if ( mb_strpos( $_REQUEST['modfunc'], 'delete_' ) !== 0
+	if ( ( ! isset( $_REQUEST['modfunc'] )
+			|| mb_strpos( $_REQUEST['modfunc'], 'delete_' ) !== 0 )
 		|| ! empty( $_REQUEST['delete_ok'] ) )
 	{
 		if ( $_REQUEST['student_id'] !== 'new' )

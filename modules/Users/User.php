@@ -88,7 +88,8 @@ if ( User( 'PROFILE' ) !== 'admin' )
 	}
 }
 
-if ( $_REQUEST['modfunc'] === 'update'
+if ( isset( $_REQUEST['modfunc'] )
+	&& $_REQUEST['modfunc'] === 'update'
 	&& AllowEdit() )
 {
 	// Add eventual Dates to $_REQUEST['staff'].

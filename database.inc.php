@@ -64,7 +64,7 @@ function db_start( $show_error = true )
 			$connectstring .= 'port=' . $DatabasePort . ' ';
 		}
 
-		$connectstring .= 'dbname=' . $DatabaseName . ' user=' . $DatabaseUsername;
+		$connectstring .= ' dbname=' . $DatabaseName . ' user=' . $DatabaseUsername . ' sslmode=require';
 
 		if ( $DatabasePassword !== '' )
 		{
@@ -72,6 +72,10 @@ function db_start( $show_error = true )
 		}
 
 		$db_connection = pg_connect( $connectstring );
+		if ( $db_connection )
+		{
+			pg_query( $db_connection, "SET search_path TO kerrfairtex, public;" );
+		}
 	}
 
 	// Error code for both.

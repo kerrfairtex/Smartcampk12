@@ -8,7 +8,8 @@ require_once 'ProgramFunctions/MarkDownHTML.fnc.php';
 require_once 'ProgramFunctions/Template.fnc.php';
 require_once 'ProgramFunctions/Substitutions.fnc.php';
 
-if ( $_REQUEST['modfunc'] === 'save' )
+if ( isset( $_REQUEST['modfunc'] )
+	&& $_REQUEST['modfunc'] === 'save' )
 {
 	if ( ! empty( $_REQUEST['mp_type_arr'] )
 		&& ! empty( $_REQUEST['st_arr'] ) )
@@ -66,7 +67,7 @@ if ( $_REQUEST['modfunc'] === 'save' )
 	}
 }
 
-if ( ! $_REQUEST['modfunc'] )
+if ( ! isset( $_REQUEST['modfunc'] ) )
 {
 	DrawHeader( ProgramTitle() );
 

@@ -213,10 +213,10 @@ if ($is_logged_in) {
           <svg class="chev open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <div class="submenu open">
-          <a href="modules.php?modname=students/Student.php" class="active">Student Info</a>
-          <a href="modules.php?modname=students/Enrollment.php">Enrollment</a>
-          <a href="modules.php?modname=attendance/Attendance.php">Attendance</a>
-          <a href="modules.php?modname=grades/Grades.php">Report Cards</a>
+          <a href="modules.php?modname=Students/Student.php" class="active">Student Info</a>
+          <a href="modules.php?modname=Students/AddDrop.php">Enrollment</a>
+          <a href="modules.php?modname=Attendance/TakeAttendance.php">Attendance</a>
+          <a href="modules.php?modname=Grades/Grades.php">Report Cards</a>
         </div>
       </div>
 
@@ -228,9 +228,9 @@ if ($is_logged_in) {
           <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <div class="submenu">
-          <a href="modules.php?modname=scheduling/Courses.php">Courses</a>
-          <a href="modules.php?modname=scheduling/Schedule.php">Master Schedule</a>
-          <a href="modules.php?modname=scheduling/Calendar.php">Calendar</a>
+          <a href="modules.php?modname=Scheduling/Courses.php">Courses</a>
+          <a href="modules.php?modname=Scheduling/Schedule.php">Master Schedule</a>
+          <a href="modules.php?modname=School_Setup/Calendar.php">Calendar</a>
         </div>
       </div>
 
@@ -242,9 +242,9 @@ if ($is_logged_in) {
           <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <div class="submenu">
-          <a href="modules.php?modname=grades/Transcripts.php">Transcripts</a>
-          <a href="modules.php?modname=grades/Gradebook.php">Gradebook</a>
-          <a href="modules.php?modname=grades/Reports.php">State Reports</a>
+          <a href="modules.php?modname=Grades/Transcripts.php">Transcripts</a>
+          <a href="modules.php?modname=Grades/GradebookBreakdown.php">Gradebook</a>
+          <a href="modules.php?modname=Grades/ReportCards.php">State Reports</a>
         </div>
       </div>
 
@@ -256,9 +256,9 @@ if ($is_logged_in) {
           <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <div class="submenu">
-          <a href="modules.php?modname=school_setup/Parameters.php">Parameters</a>
-          <a href="modules.php?modname=users/Users.php">Users</a>
-          <a href="modules.php?modname=school_setup/SchoolYears.php">School Years</a>
+          <a href="modules.php?modname=School_Setup/Configuration.php">Parameters</a>
+          <a href="modules.php?modname=Users/User.php">Users</a>
+          <a href="modules.php?modname=School_Setup/MarkingPeriods.php">School Years</a>
         </div>
       </div>
     </div>
@@ -304,8 +304,8 @@ if ($is_logged_in) {
         <div class="panel">
           <h2>Quick Actions</h2>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <a href="modules.php?modname=students/Student.php" style="padding:10px;background:var(--ink);color:#fff;border-radius:6px;text-align:center;font-weight:500;text-decoration:none;">Manage Students</a>
-            <a href="modules.php?modname=users/Users.php" style="padding:10px;background:var(--card);color:var(--ink);border:1px solid var(--border);border-radius:6px;text-align:center;font-weight:500;text-decoration:none;">Manage Users & Staff</a>
+            <a href="modules.php?modname=Students/Student.php" style="padding:10px;background:var(--ink);color:#fff;border-radius:6px;text-align:center;font-weight:500;text-decoration:none;">Manage Students</a>
+            <a href="modules.php?modname=Users/User.php" style="padding:10px;background:var(--card);color:var(--ink);border:1px solid var(--border);border-radius:6px;text-align:center;font-weight:500;text-decoration:none;">Manage Users & Staff</a>
           </div>
         </div>
       </div>
